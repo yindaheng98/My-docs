@@ -1,0 +1,70 @@
+\documentclass[a4paper]{ctexart}
+\usepackage{xeCJK}
+\usepackage[top=29mm,bottom=29mm,left=31.8mm,right=31.8mm]{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\setmainfont{Times New Roman}
+\setCJKmainfont[BoldFont={Songti SC Bold}]{SimSun}
+\setCJKfamilyfont{heiti}{SimHei}
+\renewcommand{\heiti}{\CJKfamily{heiti}\fontspec{Times New Roman}}
+
+\pagestyle{fancy}
+\fancyhead[C]{%
+  \footnotesize\sffamily
+  \yourname\quad\youremail\quad\itshape\yourweb}
+
+\newcommand{\soptitle}{研究兴趣和动机说明}
+\newcommand{\yourname}{尹达恒}
+\newcommand{\youremail}{\href{mailto:yindaheng98@163.com}{
+    \textcolor{blue}{yindaheng98@163.com}}}
+\newcommand{\yourweb}{\href{http://yindaheng98.top}{
+    \textcolor{blue}{http://yindaheng98.top}}}
+
+\newcommand{\statement}[1]{\par\medskip
+  \underline{\textbf{#1:}}\space
+}
+
+\usepackage[
+  colorlinks,
+  breaklinks,
+  pdftitle={\yourname - \soptitle},
+  pdfauthor={\yourname},
+  unicode
+]{hyperref}
+
+\begin{document}
+
+\begin{center}\LARGE\soptitle\\
+	\large\yourname\ (江南大学物联网工程学院)
+\end{center}
+
+\hrule
+\vspace{1pt}
+\hrule height 1pt
+
+\bigskip
+
+\renewcommand{\baselinestretch}{1.3}
+\zihao{-4}
+理论研究兴趣：大规模并行计算、机器学习算法、类人脑计算模型
+
+应用研究兴趣：云计算系统、微服务系统的开发与部署、基于浏览器的跨平台移动应用开发、医疗数据挖掘、机器学习算法在询证医学中的应用
+
+\statement{关于云计算和数据挖掘}
+就我所学专业物联网工程来说，云计算系统可以说是物联网应用层的主要组成部分，它扮演着接收和分析感知层数据并对感知层的行为进行控制的作用。物联网经过多年发展，如今已经积累了海量数据，但是如何从一个物联网系统所积累的数据中挖掘出影响系统效能的关键性因素并对物联网系统进行革新仍然是一个待解的难题。而机器学习是解决这类问题的有效思路之一。
+
+\statement{关于移动应用}
+私以为基于浏览器的跨平台移动应用是5G时代的应用形式。这种形式的移动应用不需要安装(只需要有一个浏览器式的应用框架)，可以快速更新(服务器统一分发客户端)，客户端设计方面有大量优秀的设计框架(JavaScript设计生态圈)，可以实现从数据交互到3D建模渲染之类的各类应用功能；
+%并且这类移动应用在开发过程中，前端和后端的关系天生就是MVC模式的经典范例(前端页面呈现数据，后端服务器处理数据)，这一点在Vue.js等渐进式的前端框架出现之后变得尤为明显；
+和安装式的应用相比，基于浏览器的移动应用的唯一缺点可能是加载应用时要下载较多的内容，但是在5G时代，这个缺点基本会被超高的网速所掩盖。
+
+
+\statement{关于微服务的开发与部署}
+我开始学习基于Docker的微服务开发与部署最初原因纯粹是实际需要。在我所参与的大部分实践项目中，项目规划和大致框架都是由我亲自给出。当到了大二大三左右，大家的学习方向都变得多样化，实践项目的规模也变得越来越大，因此为了在项目规划中适应团队成员的多样化和不断增大的项目规模，学习微服务开发与部署是必然选择。在软件开发领域，尤其是服务端开发领域，微服务架构确实是革命性的突破，它能很方便地实现诸如热更新和跨域访问之类的复杂功能，再搭配上持续集成和持续部署模式，能极大地提升软件开发的效率。
+
+\statement{关于并行计算}并行计算是一个有趣的编程思路，它和我在线性代数课学的知识完美契合，抽象思考付诸实践感觉很愉快；在学校超算俱乐部协助老师进行太湖之光系统的算法库移植让我有种在为国家发展贡献自己能力的使命感。
+\statement{关于医疗数据挖掘}“21世纪是生物医学的世纪”，结合数据爆炸但是挖掘不足的现状，私以为医疗数据挖掘会成为生物医学领域新的“医疗仪器”。
+\statement{关于询证医学}为了接触医疗数据经老师介绍到无锡市人民医院协助一些需要数据分析的医学研究，在这个过程中感叹医学论文的庞大数量，渐渐的有了学习询证医学的想法，同时也觉得机器学习天生就和询证医学需要的大量数据分析非常契合，觉得这是一个很有前途的方向。
+\pagestyle{empty}
+\thispagestyle{empty}
+\end{document}

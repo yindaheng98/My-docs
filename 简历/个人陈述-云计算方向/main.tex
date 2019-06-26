@@ -1,0 +1,64 @@
+\documentclass[a4paper]{ctexart}
+\usepackage{xeCJK}
+\usepackage[top=29mm,bottom=29mm,left=31.8mm,right=31.8mm]{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\setmainfont{Times New Roman}
+\setCJKmainfont[BoldFont={Songti SC Bold}]{SimSun}
+\setCJKfamilyfont{heiti}{SimHei}
+\renewcommand{\heiti}{\CJKfamily{heiti}\fontspec{Times New Roman}}
+
+\pagestyle{fancy}
+\fancyhead[C]{%
+  \footnotesize\sffamily
+  \yourname\quad\youremail\quad\itshape\yourweb}
+
+\newcommand{\soptitle}{个人陈述}
+\newcommand{\yourname}{尹达恒}
+\newcommand{\youremail}{\href{mailto:yindaheng98@163.com}{
+    \textcolor{blue}{yindaheng98@163.com}}}
+\newcommand{\yourweb}{\href{http://yindaheng98.top}{
+    \textcolor{blue}{http://yindaheng98.top}}}
+
+\newcommand{\statement}[1]{\par\medskip
+  \underline{\textbf{#1:}}\space
+}
+
+\usepackage[
+  colorlinks,
+  breaklinks,
+  pdftitle={\yourname - \soptitle},
+  pdfauthor={\yourname},
+  unicode
+]{hyperref}
+
+\begin{document}
+
+\begin{center}\LARGE\soptitle\\
+	\large\yourname\ (江南大学物联网工程学院)
+\end{center}
+
+\hrule
+\vspace{1pt}
+\hrule height 1pt
+
+\bigskip
+
+\renewcommand{\baselinestretch}{1.3}
+\zihao{-4}
+理论研究兴趣：大规模并行计算、机器学习算法、类人脑计算模型
+
+应用研究兴趣：云计算系统、微服务系统的开发与部署、基于浏览器的跨平台移动应用开发、医疗数据挖掘、机器学习算法在询证医学中的应用
+
+\statement{科研经历}
+基于生物电阻抗(BCM)和数据挖掘开发新的尿毒症患者水负荷评价指标
+
+\statement{实践经历}
+本人在大学期间主持开发了4个完整的云端应用：
+
+\statement{关于微服务的开发与部署}
+我开始学习微服务开发与部署最初原因纯粹是实际需要。在我所参与的大部分实践项目中，项目规划和大致框架都是由我亲自给出。当到了大二大三左右，大家的学习方向都变得多样化，实践项目的规模也变得越来越大，因此为了在项目规划中适应团队成员能力的多样化和不断增大的项目规模，学习微服务开发与部署是必然选择。在软件开发领域，尤其是服务端开发领域，微服务架构确实是革命性的突破，它能很方便地实现诸如热更新和跨域访问之类的复杂功能，再搭配上持续集成和持续部署模式，能极大地提升软件开发的效率。
+
+\pagestyle{empty}
+\thispagestyle{empty}
+\end{document}

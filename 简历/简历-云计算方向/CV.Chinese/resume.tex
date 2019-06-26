@@ -1,0 +1,258 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Deedy - One Page Two Column Resume
+% LaTeX Template
+% Version 1.2 (16/9/2014)
+%
+% Original author:
+% Debarghya Das (http://debarghyadas.com)
+%
+% Original repository:
+% https://github.com/deedydas/Deedy-Resume
+%
+% IMPORTANT: THIS TEMPLATE NEEDS TO BE COMPILED WITH XeLaTeX
+%
+% This template uses several fonts not included with Windows/Linux by
+% default. If you get compilation errors saying a font is missing, find the line
+% on which the font is used and either change it to a font included with your
+% operating system or comment the line out to use the default font.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% TODO:
+% 1. Integrate biber/bibtex for article citation under publications.
+% 2. Figure out a smoother way for the document to flow onto the next page.
+% 3. Add styling information for a "Projects/Hacks" section.
+% 4. Add location/address information
+% 5. Merge OpenFont and MacFonts as a single sty with options.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CHANGELOG:
+% v1.1:
+% 1. Fixed several compilation bugs with \renewcommand
+% 2. Got Open-source fonts (Windows/Linux support)
+% 3. Added Last Updated
+% 4. Move Title styling into .sty
+% 5. Commented .sty file.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Known Issues:
+% 1. Overflows onto second page if any column's contents are more than the
+% vertical limit
+% 2. Hacky space on the first bullet point on the second column.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[]{deedy-resume-openfont}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+    
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     LAST UPDATED DATE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\lastupdated
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     TITLE NAME
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\namesection{尹}{达恒}{ \urlstyle{same}\href{mailto:yindaheng98@163.com}{yindaheng98@163.com} | +86 188 0057 2931
+ | 江南大学,江苏无锡}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     COLUMN ONE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{minipage}[t]{0.25\textwidth}
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%     EDUCATION
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{教育经历}
+    \subsection{Cambridge University}
+	\descript{暑期游学}
+	\descript{Global Innovation and Leaderdship}
+	\location{2017.08-2017.09}
+    \sectionsep
+	\subsection{江南大学}
+	\descript{工学学士学位在读}
+	\descript{主修物联网工程}
+	\location{2016.09-2020.09}
+    \sectionsep
+    
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%     LINKS
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{链接}
+	个人主页:  \href{http://yindaheng98.top}{\bf yindaheng98.top} \\
+	Github: \href{https://github.com/yindaheng98}{\bf @yindaheng98} \\
+	\sectionsep
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%     COURSEWORK
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%     SKILLS
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{能力}
+	\subsection{数学 {\small (相关课程成绩，满分100)}}
+	\begin{tabular}{ll}
+		线性代数           & 92  \\
+		高等数学（上）     & 96  \\
+		高等数学（下）     & 97  \\
+		概率论与数理统计   & 98  \\
+		复变函数与积分变换 & 100 \\
+	\end{tabular}
+	\sectionsep
+	\subsection{英语}
+	\begin{tabular}{ll}
+		IELTS & 6.5 \\
+		CET6  & 576 \\
+		CET4  & 543 \\
+	\end{tabular}
+	\sectionsep
+	\subsection{编程 {\small (代码行数)}}
+	\begin{tabular}{ll}
+		Python     & 8577  \\
+		Latex      & 8036  \\
+		matlab     & 7265  \\
+		Java       & 6024  \\
+		HTML       & 3758  \\
+		Javascript & 3474  \\
+		PHP        & 2915  \\
+		C\#        & 1834  \\
+	\end{tabular}
+	\sectionsep
+    
+	\subsection{云计算}
+	\location{基本掌握}
+	Docker \textbullet{} Docker-compose \\
+	\location{大致了解}
+	Ubuntu Server 操作系统 \textbullet{} Hadoop\\
+	\sectionsep
+
+	\subsection{人工智能}
+	\location{基本掌握}
+	Pytorch \\
+	\location{大致了解}
+	Tensorflow \textbullet{} sklearn \\
+    \sectionsep
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%
+	%     COLUMN TWO
+	%
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.73\textwidth}
+    \section{个人陈述}
+    \subsection{研究兴趣}
+    \vspace{\topsep}
+	\begin{tightemize}
+		\item 应用研究兴趣：云数据融合、医疗数据挖掘、大规模并行计算
+		\item 理论研究兴趣：机器学习算法
+	\end{tightemize}
+    \subsection{个人特质}
+    \vspace{\topsep}
+    \begin{tightemize}
+        \item 历经两个数学竞赛和两个数学建模竞赛，具有较良好的数学抽象和建模能力
+		\item 大学4年间总代码量30000行（不计Latex和HTML），具有良好的编码和架构能力
+		\item 领导完成三个开发项目，合作开发项目多个，具有良好的合作精神和领导能力
+	\end{tightemize}
+    \sectionsep
+
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%     EXPERIENCE
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{主要科研项目}
+	\runsubsection{机器学习算法库mlpack在神威·太湖之光系统上的移植}
+	\descript{}
+	\location{2019.03 | 江南大学/神威·太湖之光软件部门}
+	\begin{tightemize}
+		\item 参与kernels部分的移植
+		\item 目前正处于调研与筹划阶段
+	\end{tightemize}
+    \sectionsep
+
+	\runsubsection{基于生物电阻抗(BCM)和数据挖掘开发新的肾透析水负荷评价指标}
+	\descript{}
+	\location{2018.12 | 江南大学/无锡市人民医院肾内科}
+    \begin{tightemize}
+        \item 该项目旨在解决目前基于BCM的水负荷评估效果不佳的问题
+        \item 该项目计划分为以下三步：
+        \vspace{\topsep}
+        \begin{tightemize}
+            \item 在现有研究的BCM水负荷评估研究的基础上加入人体成分化验数据辅助评估
+            \item 基于上一步的研究成果开展与水负荷相关的患者短期健康状况预测方法研究
+            \item 将患者健康状况的预测范围推进到终末事件期，制定长期治疗方案提供参考
+        \end{tightemize}
+        \vspace{\topsep}
+		\item 目前正整理统计结果准备撰写第一篇论文
+	\end{tightemize}
+    \sectionsep
+
+    \section{主要实践项目}
+	\runsubsection{\href{http://yindaheng98.top/ExpertField}{\bf ExpertField}}
+	\descript{2019.03}
+	\begin{tightemize}
+		\item 为中科院上海植生所解决了试验田人工采集数据的收集整理问题
+		\item 基于 Docker 的混合微服务系统
+		\item 调研相关开源实现，确定工作流程和架构选型，实现基于 YAML parser 和 Docker-compose 的快速部署
+	\end{tightemize}
+	\sectionsep
+
+	\runsubsection{\href{https://github.com/yindaheng98/WebSiteAnalysisKit}{\bf WebSiteAnalysisKit}}
+	\descript{2018.12}
+	\begin{tightemize}
+		\item 使用JavaScript进行用户行为捕捉
+		\item Python用户行为分析、Hadoop用户层次聚类
+		\item 页面前端使用Echarts多图表联动展示用户行为数据
+	\end{tightemize}
+    \sectionsep
+    
+	\runsubsection{\href{http://yindaheng98.top/Calendars}{\bf Calendars}}
+	\descript{2017.12}
+	\begin{tightemize}
+		\item 集日常事务、课程表、成绩管理、项目规划功能于一体的跨平台网页应用
+		\item 参与人数5人，项目规模约4000行代码
+		\item 使用Redis阻塞队列和长轮询方式实现了多人即时项目流程编辑
+		\item 使用Python阻塞进程实现了能承受大流量的课程表查询组件
+	\end{tightemize}
+	\sectionsep
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%     AWARDS
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+	\section{所获奖项}
+    \begin{tabular}{lll}
+        2019.05 & 全国大学生服务外包创新创业大赛 & 三等奖 \\
+        2019.04 & 美国大学生数学建模竞赛 & S奖 \\
+        2018.11 & 江南大学2016-2017学年学业奖学金 & 一等 \\
+        2018.09 & 全国大学生数学建模竞赛 & 国家级二等奖 \\
+        2017.11 & 第九届全国大学生数学竞赛（非数学类） & 江苏赛区二等奖 \\
+        2017.11 & 2016-2017年度国家奖学金 & \\
+        2017.05 & 江苏赛普通高等学校第十四届数学竞赛数学竞赛 & 本科一级组一等奖\\
+        2017.03 & 入选江南大学至善学院（荣誉学院）& \\
+	\end{tabular}
+\end{minipage}
+\end{document}  \documentclass[]{article}
