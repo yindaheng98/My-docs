@@ -1,0 +1,106 @@
+\subsubsection{模型资源说明}
+\begin{itemize}
+	\item cascade.xml：检测模型 - 目前效果最好的cascade检测模型
+	\item cascade\_lbp.xml：召回率效果较好，但其错检太多
+	\item char\_chi\_sim.h5：Keras模型-可识别34类数字和大写英文字 使用14W样本训练
+	\item char\_rec.h5：Keras模型-可识别34类数字和大写英文字 使用7W样本训练
+	\item ocr\_plate\_all\_w\_rnn\_2.h5：基于CNN的序列模型
+	\item ocr\_plate\_all\_gru.h5：基于GRU的序列模型从OCR模型修改，效果目前最好但速度较慢，需要20ms。
+	\item plate\_type.h5：用于车牌颜色判断的模型
+	\item model12.h5：左右边界回归模型
+\end{itemize}
+
+\subsubsection{Python依赖}
+\begin{itemize}
+	\item Keras (>2.0.0)
+	\item Theano(>0.9) or Tensorflow(>1.1.x)
+	\item Numpy (>1.10)
+	\item Scipy (0.19.1)
+	\item OpenCV(>3.0)
+	\item Scikit-image (0.13.0)
+	\item PIL
+\end{itemize}
+
+\subsubsection{参数说明}
+\begin{itemize}
+	\item detect\_path: 被检测图片的路径，default = None；
+	\item cascade\_model\_path: 用于object detection的模型文件路径default = model/ cascade.xml；
+	\item mapping\_vertical\_model\_path: 用左右边界回归模型文件路径default = model/model12.h5；
+	\item ocr\_plate\_model\_path: 用于检测车牌中的文字default = model/ ocr\_plate\_all\_gru.h5；
+	\item result\_save\_folder\_path: 识别结果图片存储路径folder (None表示不存储)default = None。
+\end{itemize}
+
+\subsubsection{源码解析}
+\begin{enumerate}[label=\arabic*、]
+	\item {\bf 入口文件 demo.py（附录\ref{apdx:demo.py}）}
+
+	      opencv2的imread函数导入图片, 返回的是Mat类型。HyperLPRLite.py中的LPR类构造函数导入model， 参数就是训练好的三个模型文件，分别是：
+	      \begin{itemize}
+		      \item model/cascade.xml；
+		      \item model/model12.h5；
+		      \item model/ocr\_plate\_all\_gru.h5
+	      \end{itemize}
+
+	\item {\bf HyperLPRLite.py（附录\ref{apdx:HyperLPRLite.py}）}
+	
+	      参数 model\_detection 就是文件 model/cascade.xml。用到了 opencv2的CascadeClassifier()函数 cv2.CascadeClassifier()，参数输入.xml或者.yaml文件加载模型。
+
+	\item {\bf 基于Haar特征的级联分类器用于物体检测的模型}
+	
+	      model.SImpleRecognizePlateByE2E()函数（附录\ref{apdx:SImpleRecognizePlateByE2E}）
+		  输入为一个Mat类型的图片，输出为识别的车牌字符串以及可信度confidence，该函数定义在 HyperLPRLite.py（附录\ref{apdx:HyperLPRLite.py}）。其中detectPlateRough()函数（附录\ref{apdx:detectPlateRough}）是返回图像中所有车牌的边框在图片中的bbox，返回值是一个表示车牌区域坐标边框的list。for循环中，对于每个识别出来的车牌用到filemappingVertical()（附录\ref{apdx:filemappingVertical}）
+		  
+	      输入参数：
+	      \begin{itemize}
+		      \item image\_gray: 一个rgb图像，Mat类型；
+		      \item resize\_h: 重新设定的图像大小；
+		      \item top\_bottom\_padding\_rate: 表示要裁剪掉图片的上下部占比。
+	      \end{itemize}
+
+	\item {\bf detectPlateRough()函数（附录\ref{apdx:detectPlateRough}）}
+	
+	      这个函数实现的功能如下：
+	      \begin{enumerate}
+		      \item resize图像大小：cv2.resize函数；
+		      \item 裁剪图片：输入的top\_bottom\_padding\_rate如果是0.1，那么上面裁剪掉0.1*height，下面也裁剪掉0.1*height；
+		      \item 将图像从rgb转化为灰度 cv2.cvtColor函数，cv2.COLOR\_RGB2GRAY；
+		      \item 根据前面的cv2.CascadeClassifier()物体检测模型(3)，输入image\_gray灰度图像，边框可识别的最小size，最大size，输出得到车牌在图像中的offset，也就是边框左上角坐标( x, y )以及边框高度( h )和宽度( w )；
+		      \item 对得到的车牌边框的bbox进行扩大，也就是宽度左右各扩大0.14倍，高度上下各扩大0.15倍；
+		      \item 返回图片中所有识别出来的车牌边框bbox，这个list作为返回结果。
+	      \end{enumerate}
+
+
+	\item {\bf filemappingVertical函数（附录\ref{apdx:filemappingVertical}）}
+	
+	      输入参数：裁剪的车牌区域图像（Mat类型），rect也是裁剪的车牌部分的图像（Mat类型）
+
+	      实现功能：
+	      \begin{enumerate}
+		      \item 将原来车牌图像resize大小：66*16*3；
+		      \item 将原来灰度图颜色通道[0, 255]转化为float类型[0,1]；
+		      \item 将输入66*16(float),输入进模型进行测试。
+	      \end{enumerate}
+
+	\item {\bf ModelFineMapping模型（附录\ref{apdx:ModelFineMapping}）}
+	
+	      model\_finemapping()函数（附录\ref{apdx:model_finemapping}）实现keras网络模型对车牌的左右边界进行回归；通过modelFineMapping.loadweights()函数加载模型文件；通过modelFineMapping.predict输出网络结果。
+
+	      输入：16*66*3 tensor
+
+	      输出：长度为2的tensor
+
+	\item {\bf ocr识别（附录\ref{apdx:ocr}）}
+	
+	      对于每个车牌区域的for循环中，经过fineMappingVertical处理后输入到recognizeOne函数（见附录\ref{apdx:recognizeOne}）进行ocr识别。
+
+	\item {\bf modelSecRec模型}
+	
+		  基于GRU的序列模型从OCR模型中修改的网络模型。
+		  
+		  model\_sec\_rec函数（附录\ref{apdx:model_sec_rec}）输入model\_path为模型weights文件路径；ocr部分的网络模型(keras模型)。
+		  
+		  输入层：164*48*3的tensor
+		  
+	      输出层：长度为7 的tensor，类别有len(chars)+1种（附录\ref{apdx:chars}）
+
+\end{enumerate}

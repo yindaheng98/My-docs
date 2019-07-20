@@ -1,0 +1,530 @@
+\documentclass[a4paper]{ctexart}
+\usepackage{xeCJK}
+\usepackage{setspace}
+\usepackage{graphicx,wrapfig}
+\usepackage{fontspec,xunicode,xltxtra}
+\usepackage{fancyhdr,titlesec,titletoc}
+\usepackage[titletoc]{appendix}
+\usepackage[top=29mm,bottom=29mm,left=31.8mm,right=31.8mm]{geometry}
+\usepackage{enumerate,enumitem}
+\usepackage{caption}
+\usepackage{amsmath,amssymb,bm,array}
+\usepackage{cite}
+\usepackage{diagbox}
+\usepackage{algorithm,algorithmicx,algpseudocode}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{color}
+\setmainfont{Times New Roman}
+\setCJKmainfont[BoldFont={Songti SC Bold}]{SimSun}
+\setCJKfamilyfont{heiti}{SimHei}
+\renewcommand{\heiti}{\CJKfamily{heiti}\fontspec{Times New Roman}}
+
+\newcommand{\mycaptionfont}{\heiti\zihao{5}}
+\captionsetup[figure]{name={\mycaptionfont 图},labelsep=period}
+\captionsetup[table]{name={\mycaptionfont 表},labelsep=period}
+\floatname{algorithm}{\mycaptionfont 算法}
+\captionsetup[algorithm]{labelsep=period}
+\renewcommand{\captionfont}{\mycaptionfont}
+\renewcommand{\captionlabelfont}{\mycaptionfont}
+
+\ctexset {
+	section = {
+		number = \arabic{section},
+		format = \zihao{4}\bfseries,
+	},
+	subsection = {
+		number = \arabic{section}.\arabic{subsection},
+		format = \zihao{-4}\bfseries,
+	},
+	subsubsection = {
+		number = \arabic{section}.\arabic{subsection}.\arabic{subsubsection},
+		format = \zihao{-4}\bfseries,
+	}
+}
+\setlist[enumerate]{itemindent=2em,listparindent=2em,leftmargin=1em,label=\arabic*、}
+
+\setlength\parskip{.5\baselineskip}
+\fancypagestyle{plain}{\pagestyle{fancy}}%改变章节首页页眉
+\pagestyle{fancy}
+\lhead{\kaishu~物联网综合课程设计~}
+\rhead{\kaishu~尹达恒~伍华杰~纪港~孙硕}
+\cfoot{\thepage}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\titlecontents{section}[0em]{\vspace{0.01\baselineskip}\songti\zihao{-4}}{\thecontentslabel\ }{}
+{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+\titlecontents{subsection}[2em]{\vspace{0.01\baselineskip}\songti\zihao{-4}}{\thecontentslabel\ }{}
+{\hspace{.5em}\titlerule*[4pt]{$\cdot$}\contentspage}
+\setcounter{tocdepth}{2}
+
+\begin{document}
+
+\lstset{
+	language={C},
+	numbers=left,numberstyle=\tiny,
+	basicstyle=\small\ttfamily,
+	stringstyle=\color{codepurple},
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{codegreen},
+	rulesepcolor=\color{codegray},
+	tabsize=2
+}
+
+\begin{spacing}{1}
+	\tableofcontents
+\end{spacing}
+\newpage
+\setcounter{page}{1}
+\begin{center}
+	{\zihao{-3}\textbf{基于树莓派和云服务的停车场道闸控制系统设计}}
+
+	{\zihao{-4}尹达恒\quad 伍华杰\quad 纪港\quad 孙硕}\\[-1mm]
+
+	{\zihao{5}（江南大学物联网工程学院，江苏\quad 无锡）}
+\end{center}
+\renewcommand{\baselinestretch}{1.3}
+\songti\zihao{-4}
+\section{设计要求}
+\begin{itemize}
+	\item 使用树莓派和传感器实现对车辆的感知、识别、信息上传和对闸杆的控制；
+	\item 部署云服务系统实现车牌识别和车辆出入情况记录，并在网页上进行显示；
+	\item 对树莓派和云服务系统进行整合，使之成为一个能协调工作的完整物联网系统。
+\end{itemize}
+
+\section{设计原理}
+\input{section-fundation.tex}
+
+\section{设计方案}
+\subsection{道闸硬件设计}
+\input{subsection-design-door.tex}
+
+\subsection{道闸软件设计}
+\input{subsection-design-software.tex}
+
+\subsection{车牌识别算法分析}\label{车牌识别算法分析}
+\input{subsection-design-alg.tex}
+
+\subsection{云服务设计}\label{云服务设计}
+云端服务要实现的功能主要有4个：数据存储、车牌识别、道闸控制和付款管理。这4个功能分别由4个微服务完成，它们之间的关系如图\ref{fig:云端微服务关系结构图}所示。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figure/server-all.pdf}
+	\caption{云端微服务关系结构图}\label{fig:云端微服务关系结构图}
+\end{figure}
+
+\subsubsection{数据存储微服务}
+数据存储是整个云服务系统的基础，它承担着记录车牌识别和车辆出入情况，并为客户端和云服务系统的快速即时通信提供可靠的数据支持。数据存储微服务的组成部分和各自的特性功能如下：
+\begin{itemize}
+	\item 关系型硬盘数据库：提供可靠而大容量的数据存储，但速度较慢，用于存储历史记录；
+	\item 非关系型内存数据库：提供快速小容量的数据存储，用于存储需要经常访问的运行数据；
+	\item 文件系统：用于存储图片等不便于进入数据库的文件数据。
+\end{itemize}
+
+\subsubsection{车牌识别微服务}
+由于树莓派操作系统的特殊性，道闸终端上无法稳定运行通常的图像识别库，因此需要将\ref{车牌识别算法分析}中所介绍的车牌识别算法封装为一个车牌识别微服务部署在云端，该微服务将接收并识别道闸终端拍照上传的车牌图像，并将识别结果发回到道闸终端，从而使道闸具备车牌识别功能。车牌识别微服务的运行流程如图\ref{fig:车牌识别微服务运行流程}。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figure/server-python.pdf}
+	\caption{车牌识别微服务运行流程}\label{fig:车牌识别微服务运行流程}
+\end{figure}
+
+\subsubsection{道闸控制微服务}\label{道闸控制微服务}
+道闸控制微服务是整个云服务系统的核心，也是系统中功能部件最多、结构最为复杂的微服务。道闸控制微服务的功能可分为以下三类：
+\begin{itemize}
+	\item 接收处理道闸终端上传的车辆信息，并返回开关指令控制道闸的放行；
+	\item 与第三方付款管理服务通信，实现出口处的计时收费功能；
+	\item 与管理员客户端通信，实时同步车辆信息和历史记录。
+\end{itemize}
+
+其主要运行流程如下：
+
+\begin{enumerate}[label=\bf{\arabic*、}]
+	\item {\bf 控制入口道闸}
+
+	      在入口处，道闸终端在检到车辆并识别出车牌号后，会向服务器发送一条包含车牌号的进入信息，这时服务器需要判断停车场内是否还有剩余车位，若有则向终端返回“放行”指令并在历史记录数据库和运行数据库中记录下车辆的进入时间，否则返回“不放行”指令。其流程图如图\ref{fig:入口道闸控制运行流程}。
+
+	      \begin{figure}[htbp]
+		      \centering
+		      \includegraphics[width=\textwidth]{figure/server-enter.pdf}
+		      \caption{入口道闸控制服务运行流程}\label{fig:入口道闸控制运行流程}
+	      \end{figure}
+
+	\item {\bf 控制出口道闸}
+
+	      在入口处类似处，出口道闸终端也会在检测到车辆并识别出车牌号后向服务器发送一条包含车牌号的信息，这时服务器需要进行如下操作：
+	      \begin{enumerate}[label=\arabic*、]
+		      \item 从数据库中获取到该车的进入时间；
+		      \item 获取当前时间，计算时间差和应付金额；
+		      \item 在付款管理服务中创建一个付款订单，并获取到订单信息；
+		      \item 向终端发回订单信息；
+		      \item 向付款管理服务轮询订单支付状态，直到订单支付完成或被取消；
+		      \item 若订单支付完成，则向终端发回“放行”指令，否则发回“不放行”指令；
+		      \item 在数据存储微服务中写入付款记录。
+	      \end{enumerate}
+
+	      其流程图如图\ref{fig:出口道闸控制运行流程}所示。
+
+	      \begin{figure}[htbp]
+		      \centering
+		      \includegraphics[width=\textwidth]{figure/server-exit.pdf}
+		      \caption{出口道闸控制服务运行流程}\label{fig:出口道闸控制运行流程}
+	      \end{figure}
+
+	\item {\bf 支持客户端网页上停车情况的即时更新}
+
+	      客户端网页的即时更新由一个位于数据存储微服务中的数据刷新标志位所控制。每当系统中写入了新的车辆出入和付款记录时，这个标志位就会置1，这时服务器会经由与客户端之间建立的长轮询向客户端发送“更新数据”的指令；客户端接到“更新数据”的指令后，再以普通HTTP请求方式获取到新的服务器数据，并刷新页面显示。其流程图如图\ref{fig:客户端网页即时更新服务运行流程}所示。
+
+	      \begin{figure}[htbp]
+		      \centering
+		      \includegraphics[width=\textwidth]{figure/server-client.pdf}
+		      \caption{客户端网页即时更新服务运行流程}\label{fig:客户端网页即时更新服务运行流程}
+	      \end{figure}
+
+	\item {\bf 获取道闸放行历史记录}
+
+	      网页客户端中除即时更新显示当前停车场内车辆情况外，还需要显示历史记录。和当前车辆情况显示不同，显示历史记录并不要求实时性，因此可以使用简单的HTTP请求方式从服务器端获取。其流程图如图\ref{fig:客户端获取历史记录流程}所示。
+
+	      \begin{figure}[htbp]
+		      \centering
+		      \includegraphics[width=\textwidth]{figure/server-history.pdf}
+		      \caption{客户端获取历史记录流程}\label{fig:客户端获取历史记录流程}
+	      \end{figure}
+\end{enumerate}
+
+\subsubsection{付款管理微服务}\label{付款管理微服务}
+由于目前大多数第三方付款管理服务都需要注册经营执照，无法在项目中使用，因此本项目仿照支付宝标准付款接口在微服务架构中添加了一个模拟的第三方支付管理微服务，该微服务被设计为不与本项目中的其他任何微服务有依赖关系，从而能最大程度地模拟第三方付款管理服务的运行。支付宝标准付款接口的运行可以简化为如图\ref{fig:付款管理服务运行流程}所示的流程。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figure/server-alipay.pdf}
+	\caption{付款管理服务运行流程}\label{fig:付款管理服务运行流程}
+\end{figure}
+
+\section{系统实现}
+\subsection{道闸硬件实现}
+前文已经介绍了系统的总体设计和相关算法算法，本节将结合前文，具体实现一个基于树莓派和云服务的停车场道闸系统的硬件搭建。
+
+系统硬件搭建主要是将个子模块通过GPIO口和CSI（摄像机串行接口）连接到树莓派上。其中摄像机连接CSI接口，只要注意方向插入即可；用来感应是否有车到来的红外传感器除了接VCC和GND外，电平输出端接树莓派的GPIO 21（Pin 40）；用来感应车辆是否通过道闸的红外传感器除了接VCC和GND外，电平输出端接树莓派的GPIO 20（Pin 38）；步进电机驱动芯片上IN1~4四个接口分别接树莓派的GPIO 5（Pin 29），GPIO 6（Pin 31），GPIO 13（Pin 33），GPIO 19（Pin 35）。
+
+硬件接线如图\ref{fig:硬件接线图}所示，最终完成实物如图\ref{fig:系统硬件实物图}。
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figure/archive-pin.pdf}
+	\caption{硬件接线图}\label{fig:硬件接线图}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figure/archive.JPG}
+	\caption{系统硬件实物图}\label{fig:系统硬件实物图}
+\end{figure}
+
+\subsection{道闸软件实现}
+\input{subsection-achieve-software.tex}
+
+\subsection{车牌识别算法实现}\label{车牌识别算法实现}
+\input{subsection-achieve-alg.tex}
+
+\subsection{云服务实现}
+\subsubsection{微服务架构}
+云端的微服务系统配置如表\ref{tab:微服务系统配置表}。它们之间的关系如图\ref{fig:微服务系统关系图}所示。各微服务之间通过Docker内部DNS互相通信，其中node、python、alipay三个微服务可以通过主机端口映射从外部网络访问；承担数据存储的mysql服务和车牌识别记录的python微服务的系统数据通过虚拟磁盘挂载存储于物理主机上，保证数据的持久性。
+\begin{table}[htbp]
+	\setstretch{1.5}
+	\centering
+	\caption{微服务系统配置表}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		微服务名称 & 操作系统 & 应用软件     & 功能                  \\
+		\hline
+		node       & alpine   & node 8.16.0  & 道闸控制微服务        \\
+		\hline
+		mysql      & debian   & MySQL 8.0.16 & 关系型硬盘数据库      \\
+		\hline
+		redis      & debian   & redis 5.0.5  & 非关系型内存数据库    \\
+		\hline
+		python     & debian   & python 3.7.3 & 车牌识别微服务        \\
+		\hline
+		alipay     & alpine   & node 8.16.0  & 付款管理微服务        \\
+		\hline
+		物理主机   & ubuntu   & docker       & 微服务控制台/文件系统 \\
+		\hline
+	\end{tabular}
+	\label{tab:微服务系统配置表}
+\end{table}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=\textwidth]{figure/docker-all.pdf}
+	\caption{微服务系统关系图}\label{fig:微服务系统关系图}
+\end{figure}
+
+\subsubsection{MySQL数据库结构}
+在MySQL数据库中，停车记录、付款记录和识别记录分别存储于三个数据表中：
+\begin{itemize}
+	\item 停车记录（表\ref{tab:停车记录表}）：记录时间、车牌号和动作，其中动作包含“进入”和“离开”两种；
+	      \begin{table}[htbp]
+		      \setstretch{1.5}
+		      \centering
+		      \caption{停车记录表}
+		      \begin{tabular}{|c|c|}
+			      \hline
+			      字段名称 & 数据类型   \\
+			      \hline
+			      时间     & datetime   \\
+			      \hline
+			      车牌号   & varchar(7) \\
+			      \hline
+			      动作     & boolean    \\
+			      \hline
+		      \end{tabular}
+		      \label{tab:停车记录表}
+	      \end{table}
+	\item 付款记录（表\ref{tab:付款记录表}）：记录时间、车牌号和付款金额；
+	      \begin{table}[htbp]
+		      \setstretch{1.5}
+		      \centering
+		      \caption{付款记录表}
+		      \begin{tabular}{|c|c|}
+			      \hline
+			      字段名称 & 数据类型   \\
+			      \hline
+			      时间     & datetime   \\
+			      \hline
+			      车牌号   & varchar(7) \\
+			      \hline
+			      金额     & double     \\
+			      \hline
+		      \end{tabular}
+		      \label{tab:付款记录表}
+	      \end{table}
+	\item 识别记录（表\ref{tab:识别记录表}）：记录时间、图片路径和识别结果；
+	      \begin{table}[htbp]
+		      \setstretch{1.5}
+		      \centering
+		      \caption{识别记录表}
+		      \begin{tabular}{|c|c|}
+			      \hline
+			      字段名称 & 数据类型     \\
+			      \hline
+			      时间     & datetime     \\
+			      \hline
+			      图片     & varchar(255) \\
+			      \hline
+			      识别结果 & json         \\
+			      \hline
+		      \end{tabular}
+		      \label{tab:识别记录表}
+	      \end{table}
+\end{itemize}
+
+\subsubsection{Redis数据库结构}\label{Redis数据库结构}
+原则上说，所有需要快速即时更新的数据都要存储于Redis数据库中以保证速度。按照\ref{云服务设计}节所给出的设计方案，系统主要的实时性负担在于出口道闸处的订单状态更新和网页客户端的即时更新，因此可以将系统内付款订单的状态、车辆的状态和客户端更新标志位存入Redis数据库中。
+\begin{enumerate}[label=\bf{\arabic*、}]
+	\item {\bf 付款订单状态和车辆状态的存储方式}
+	
+	      车辆的状态可以分三种：
+	      \begin{itemize}
+		      \item 已停车：车牌在入口道闸成功识别但没有在出口道闸识别；
+		      \item 付款中：车牌在出口道闸成功识别但没有完成付款；
+		      \item 已离开：出口道闸成功识别并已完成付款。
+	      \end{itemize}
+
+	      对这三种状态的保存可以通过Redis键值对和数组两个结构实现。将车辆的进入时间与其车牌号匹配并以键值方式存入Redis数据库，将正在付款的车辆以数组方式存入一个Redis数组，车辆的三种状态就可以表示如下：
+	      \begin{itemize}
+		      \item 已停车：Redis键值对数据库中存有该车牌号对应的进入时间；
+		      \item 付款中：Redis队列中存有该车牌号；
+		      \item 已离开：Redis队列中没有该车牌号且Redis键值对数据库中也没有该车牌号对应的进入时间。
+	      \end{itemize}
+	      从而能同时达到存储车辆状态和订单状态的目的，并且还能为出口处的金额计算加速
+
+	\item {\bf 客户端更新标志位的存储方式}
+	
+	考虑到实际应用中客户端可能被同时多次开启，因此需要为每个保持长轮询的客户端都设置一个单独的更新标志位，每个标志位都只取01二值，因此可以以Redis hash表的方式进行存储。每当有车辆状态的更新时，hash表中所有的客户端标志位都同时进行更新；而在进行长轮询时，每个客户端的请求处理程序都只查看并修改自己客户端的标志位，从而能达到多客户端同时异步更新的效果。
+
+\end{enumerate}
+
+\subsubsection{车牌识别微服务的实现}
+车牌识别微服务实际上就是对\ref{车牌识别算法实现}中实现的车牌识别算法的封装。由于识别程序由python写就，因此选用python实现车牌识别微服务。在python中常用的服务器封装方式是http.server类，在该类中定义doPost()方法，在该方法中对图像识别请求进行处理接收，并调用\ref{车牌识别算法实现}中实现的车牌识别算法对上传的图像进行识别，即完成对车牌识别算法的封装；在每次识别完成后，都将识别图像存储与文件系统中，并在MySQL数据库识别记录表中写入图片路径和识别结果，即可完成对车牌识别情况的记录。其微服务应用核心代码如附录\ref{apdx:车牌识别微服务核心代码}所示。
+
+\subsubsection{付款管理微服务的实现}
+由\ref{云服务设计}节给出的设计方案，付款管理微服务不能与系统中的其他任何微服务有依赖关系，因此其所有的操作都必须在微服务内部进行。因此对于\ref{付款管理微服务}中给出的付款管理功能运行流程，可以使用node实现如下接口：
+
+\begin{itemize}
+	\item /create：创建支付订单、返回订单信息。当收到创建订单的请求后，使用node中的随机数生成算法生成一串随机数字（不能与系统内的其他订单重复）作为订单编号，以订单编号为键，支付信息为值存入一个全局数组中，并向请求方返回这个订单编号作为订单信息；
+	\item /pay：用户支付。当用户从商家处收到订单信息（订单号）后，即向此接口传递订单信息从而发起支付请求，付款管理服务完成支付请求后将从全局数组中删除订单编号对应的订单信息；
+	\item /ispay：轮询支持。轮询请求方在使用此接口查询支付情况时需带上要查询的订单编号，系统根据这个编号查询全局数组中是否还存有该订单编号，若有则说明支付未完成，反之说明支付完成，向请求方返回“支付完成”信息。
+\end{itemize}
+
+\subsubsection{道闸控制微服务的实现}
+按照\ref{道闸控制微服务}节给出的设计方案，道闸控制微服务可以使用node实现如下功能：
+
+\begin{enumerate}[label=\bf{\arabic*、}]
+	\item {\bf 控制入口道闸}
+
+	接口列表：
+
+	\begin{itemize}
+		\item /enter：接收车牌号返回“放行”（字符串"yes"）或“不放行”（字符串"no"）。
+	\end{itemize}
+
+	入口道闸的实现比较简单，服务端只需要在收到入口道闸终端向/enter接口发送的请求后按照剩余车位有无返回“放行”或“不放行”信息并在Redis键值数据库和MySQL停车记录表中写入车辆进入时间即可。因此可以设置一个全局变量，该变量在服务初始化时载入，初始值为停车场内车辆总数；每当有入口道闸终端的请求到达时让该变量减一、有车辆从出口道闸离开时令该变量加一，以此实现剩余车位计数和判断。
+
+	\item {\bf 控制出口道闸}
+
+	接口列表：
+
+	\begin{itemize}
+		\item /exit：接收车牌号返回支付订单信息；
+		\item /ispay：长轮询接口，接收车牌号，查询订单支付情况。
+	\end{itemize}
+	
+	出口道闸的运行可以分为一前一后两个请求。
+	
+	首先在出口道闸终端处识别车牌后，终端通过一个请求向服务器/exit接口发送车辆信息，服务器计算该车辆的应付金额后，再通过网络向付款管理微服务发起创建订单请求，将获取到订单信息返回到终端进行显示供用户支付。
+
+	随后，出口道闸终端将向/ispay接口发起一个长轮询连接道闸控制服务，道闸控制服务在后台对订单支付状态进行短轮询，直到付款管理微服务返回了“支付完成”信息，按照支付消息经由长轮询连接向道闸终端发送“放行”或“不放行”（字符串"ok"）或“支付取消”（字符串"no"）指令。
+
+	由以上两个请求即可实现完整的出口道闸控制功能。此外，在/exit请求中创建订单完成后将车辆信息放入Redis队列，即可将车辆状态从“已停车”改变为“付款中”；在/ispay请求的“支付完成”信息到达时车辆信息从Redis队列和键值数据库中删除，即可将车辆状态从“付款中”改变为“已离开”；且每当车辆状态从“付款中”改变为“已离开”后，将付款车牌号、时间以及金额和“离开”动作分别写入MySQL付款记录表和停车记录表中，即可实现停车历史和付款历史的记录。
+
+	\item {\bf 支持客户端网页上停车情况的即时更新}
+	
+	接口列表：
+	\begin{itemize}
+		\item /updated：长轮询接口，接收客户端的连接请求，返回更新数据指令；
+		\item /getCurrentCars：获取当前车辆信息。
+	\end{itemize}
+
+	由\ref{道闸控制微服务}节给出的网页停车情况的即时更新需求以及\ref{Redis数据库结构}中给出的标志位处理方式，可以得到客户端网页的即时更新以及服务器支持的实现方式：
+
+	\begin{itemize}
+		\item 客户端：使用jQuery的Ajax方法从服务器端获取数据，使用渐进式框架Vue.js将数据与页面元素绑定。不断向服务端/updated接口发起Ajax长轮询请求，当收到更新指令后向/getCurrentCars请求当前车辆信息并完成页面显示的刷新；
+		\item 服务端：每当一个新的客户端的客户端发起了连接请求（任意连接请求）时，为这个客户端分配一个唯一的编号写入cookie中，同时还将这个编号写入Redis客户端更新标志位hash表。当客户端向/updated接口发起长轮询时，服务端不断短轮询Redis客户端更新标志位hash表中长轮询客户端cookie值对应的hash存储值，直到该值置1，则向客户端发送更新指令，并将该位置0。按照\ref{Redis数据库结构}中给出的Redis客户端更新标志位hash表更新方式进行标志位更新，即可实现客户端网页上停车情况的即时更新支持。
+	\end{itemize}
+
+	\item {\bf 获取道闸放行历史记录}
+	
+	相关接口：
+	\begin{itemize}
+		\item /index/getHistoryCars：获取系统中的所有车牌号，返回值为一记录车牌号的JSON数组；
+		\item /index/getCarHistorys：输入值为车牌号，获取该车牌号在停车记录表中的所有记录，返回值为时间和停车记录组成的二维JSON数组；
+		\item /index/getCarPayments：输入值为车牌号，获取该车牌号在付款记录表中的所有记录，返回值为时间和付款金额组成的二维JSON数组；
+		\item /index/getDetects：获取所有的识别记录，返回值为时间、图片url和识别结果组成的二维JSON数组。
+	\end{itemize}
+	
+\end{enumerate}
+
+\section{总结}
+\subsection{设计结果}
+整个系统能稳定运行且完全符合设计要求。
+
+\subsection{遇到的问题}
+\begin{enumerate}
+	\item 刚开始在设计过程中，自己对于电机的设计存在疏漏之处，旋转时不是在0至90度之间转动，而是只要红外避障管脚输入合适，电机会转任意角度，这显然不符合实际；
+	
+	改进：设置角度标志位，只要起杆过一次，它也就不会再起杆了，除非杆已经落下。
+
+	\item 杆前红外线检测到车进入时比较容易控制起杆，因为是车头先碰到，是符合常理的。但是离开时需要车尾完全离开时才行，而程序也是车头先碰到再落杆；
+	
+	改进：需要在落杆程序那里设置死循环，杆后红外第一次检测到不落杆，直至检测不到再落杆。
+
+	\item 过程中发现树莓派的拍照功能不是很好，传送给云端的照片有很多无法识别，但是程序没有这种应对措施；
+	
+	改进：添加标志位可以解决问题，若发现系统无法识别的情况，应该一直识别直到识别出车牌为止，若车主不想等可以离开，系统则等待下一辆车的进库。
+\end{enumerate}
+
+\subsection{心得体会}
+\begin{enumerate}
+	\item 以团队的形式进行的综合课程设计极大地提高了班级凝聚力；
+	\item 在互相协作中掌握了大型项目的规划和协调能力；
+	\item 精进了大家的代码水平；
+	\item 对物联网的理解更进一步。
+\end{enumerate}
+
+\newpage
+\section*{附录}\addcontentsline{toc}{section}{附录}\appendix
+\input{appendix-py.tex}
+\section{车牌识别微服务核心代码}\label{apdx:车牌识别微服务核心代码}
+\begin{lstlisting}[language=python]
+# coding=utf-8
+import logging
+from database import connect, rand_filename, add
+import json
+from hyperlpr import HyperLPR_PlateRecogntion
+import cv2
+import cgi
+from http.server import BaseHTTPRequestHandler
+import numpy as np
+
+def rotate(n, img):
+	for i in range(0, n):
+		img = np.flip(np.transpose(img, axes=(1, 0, 2)), 1)
+	return img
+
+conn = None
+logging.basicConfig(level=logging.DEBUG)
+
+class PostHandler(BaseHTTPRequestHandler):
+	def log_message(self, *args, **kwargs):
+		fmt = 'PostHandler.log_message(%s,%s)'
+		logging.debug(fmt % (str(args), str(kwargs)))
+
+	def do_POST(self):
+		global conn
+		if(conn == None):
+			conn = connect()
+		try:
+			conn.cursor()
+		except:
+			conn=connect()
+		form = cgi.FieldStorage(
+			fp=self.rfile,
+			headers=self.headers,
+			environ={
+				'REQUEST_METHOD': 'POST',
+				'CONTENT_TYPE': self.headers['Content-Type']
+			}
+		)
+		arg = int(form['arg'].value) if 'arg' in list(form.keys()) else 0
+		self.send_response(200)
+		self.end_headers()
+
+		results = []
+		for field in form.keys():
+			if field == 'arg':
+				continue
+			field_item = form[field]
+			filename = rand_filename(
+				conn, 32, '%s.'+form[field].filename.split('.')[-1])
+			path = 'images/'+filename
+			with open(path, 'wb') as f:
+				f.write(form[field].value)
+			img = rotate(arg, cv2.imread(path))
+			print(img.shape)
+			cv2.imwrite(path, img)
+			print(path)
+			result = HyperLPR_PlateRecogntion(img)
+			results.append(result)
+			add(conn, filename, json.dumps(result))
+		self.wfile.write(json.dumps(results).encode('utf-8'))
+		return
+
+def StartServer():
+	from http.server import HTTPServer
+	sever = HTTPServer(("", 8080), PostHandler)
+	sever.serve_forever()
+
+if __name__ == '__main__':
+	logging.debug('车牌识别服务启动！')
+	StartServer()
+	conn.close()
+\end{lstlisting}
+
+\end{document}

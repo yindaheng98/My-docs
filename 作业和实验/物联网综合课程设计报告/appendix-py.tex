@@ -1,0 +1,442 @@
+\section{demo.py(部分)}\label{apdx:demo.py}
+\begin{lstlisting}[language=python]
+import HyperLPRLite as pr
+import cv2
+import numpy as np
+
+grr = cv2.imread("images_rec/2_.jpg")
+model = pr.LPR("model/cascade.xml", "model/model12.h5", "model/ocr_plate_all_gru.h5")
+for pstr, confidence, rect in model.SimpleRecognizePlateByE2E(grr):
+	if confidence > 0.7:
+		image = drawRectBox(grr, rect, pstr + " " + str(round(confidence, 3)))
+		print "plate_str:"
+		print pstr
+		print "plate_confidence"
+		print confidence
+cv2.imshow("image", image)
+cv2.waitKey(0)
+\end{lstlisting}
+
+\section{HyperLPRLite.py(部分)}\label{apdx:HyperLPRLite.py}
+\begin{lstlisting}[language=python]
+class LPR():
+def __init__(self,model_detection,model_finemapping,model_seq_rec):
+	self.watch_cascade = cv2.CascadeClassifier(model_detection)
+	self.modelFineMapping = self.model_finemapping()
+	self.modelFineMapping.load_weights(model_finemapping)
+	self.modelSeqRec = self.model_seq_rec(model_seq_rec)
+\end{lstlisting}
+
+\section{model.SImpleRecognizePlateByE2E()}\label{apdx:model.SImpleRecognizePlateByE2E}
+\begin{lstlisting}[language=python]
+for pstr,confidence,rect in model.SimpleRecognizePlateByE2E(grr):
+	if confidence>0.7:
+		image = drawRectBox(grr, rect, pstr+" "+str(round(confidence,3)))
+		print "plate_str:"
+		print pstr
+		print "plate_confidence"
+		print confidence
+\end{lstlisting}
+
+\section{SImpleRecognizePlateByE2E()}\label{apdx:SImpleRecognizePlateByE2E}
+\begin{lstlisting}[language=python]
+def SimpleRecognizePlateByE2E(self, image):
+images = self.detectPlateRough(image, image.shape[0], top_bottom_padding_rate=0.1)
+res_set = []
+for j, plate in enumerate(images):
+	plate, rect = plate
+	image_rgb, rect_refine = self.finemappingVertical(plate, rect)
+	res, confidence = self.recognizeOne(image_rgb)
+	res_set.append([res, confidence, rect_refine])
+return res_set
+\end{lstlisting}
+
+\section{detectPlateRough()}\label{apdx:detectPlateRough}
+\begin{lstlisting}[language=python]
+def detectPlateRough(self, image_gray, resize_h=720, en_scale=1.08, top_bottom_padding_rate=0.05):
+if top_bottom_padding_rate > 0.2:
+	print("error:top_bottom_padding_rate > 0.2:", top_bottom_padding_rate)
+	exit(1)
+height = image_gray.shape[0]
+padding = int(height * top_bottom_padding_rate)
+scale = image_gray.shape[1] / float(image_gray.shape[0])
+image = cv2.resize(image_gray, (int(scale * resize_h), resize_h))
+image_color_cropped = image[padding:resize_h - padding, 0:image_gray.shape[1]]
+image_gray = cv2.cvtColor(image_color_cropped, cv2.COLOR_RGB2GRAY)
+watches = self.watch_cascade.detectMultiScale(image_gray, en_scale, 2, minSize=(36, 9), maxSize=(36 * 40, 9 * 40))
+cropped_images = []
+for (x, y, w, h) in watches:
+	x -= w * 0.14
+	w += w * 0.28
+	y -= h * 0.15
+	h += h * 0.3
+	cropped = self.cropImage(image_color_cropped, (int(x), int(y), int(w), int(h)))
+	cropped_images.append([cropped, [x, y + padding, w, h]])
+return cropped_images
+\end{lstlisting}
+
+\section{filemappingVertical()}\label{apdx:filemappingVertical}
+\begin{lstlisting}[language=python]
+def finemappingVertical(self, image, rect):
+resized = cv2.resize(image, (66, 16))
+resized = resized.astype(np.float) / 255
+res_raw = (np.array([resized]))[0]
+res = res_raw * image.shape[1]
+res = res.astype(np.int)
+H, T = res
+H -= 3
+if H < 0:
+	H = 0
+T += 2;
+if T >= image.shape[1] - 1:
+	T = image.shape[1] - 1
+rect[2] -= rect[2] * (1 - res_raw[1] + res_raw[0])
+rect[0] += res[0]
+image = image[:, H:T + 2]
+image = cv2.resize(image, (int(136), int(36)))
+return image, rect
+\end{lstlisting}
+
+\section{ModelFineMapping模型}\label{apdx:ModelFineMapping}
+\begin{lstlisting}[language=python]
+class LPR():
+    def __init__(self,model_detection,model_finemapping,model_seq_rec):
+        self.watch_cascade = cv2.CascadeClassifier(model_detection)
+        self.modelFineMapping = self.model_finemapping()
+        self.modelFineMapping.load_weights(model_finemapping)
+        self.modelSeqRec = self.model_seq_rec(model_seq_rec)
+\end{lstlisting}
+
+\section{model\_finemapping()}\label{apdx:model_finemapping}
+\begin{lstlisting}[language=python]
+def model_finemapping(self):
+input = Input(shape=[16, 66, 3])
+x = Conv2D(10, (3, 3), strides=1, padding='valid', name='conv1')(input)
+x = Activation("relu", name='relu1')(x)
+x = MaxPool2D(pool_size=2)(x)
+x = Conv2D(16, (3, 3), strides=1, padding='valid', name='conv2')(x)
+x = Activation("relu", name='relu2')(x)
+x = Conv2D(32, (3, 3), strides=1, padding='valid', name='conv3')(x)
+x = Activation("relu", name='relu3')(x)
+x = Flatten()(x)
+output = Dense(2, name="dense")(x)
+output = Activation("relu", name='relu4')(output)
+model = Model([input], [output])
+return model
+\end{lstlisting}
+
+\section{ocr识别}\label{apdx:ocr}
+\begin{lstlisting}[language=python]
+for j, plate in enumerate(images):
+plate, rect = plate
+image_rgb, rect_refine = self.finemappingVertical(plate, rect)
+res, confidence = self.recognizeOne(image_rgb)
+res_set.append([res, confidence, rect_refine])
+\end{lstlisting}
+
+\section{recognizeOne()}\label{apdx:recognizeOne}
+\begin{lstlisting}[language=python]
+def recognizeOne(self, src):
+x_tempx = src
+x_temp = cv2.resize(x_tempx, (164, 48))
+x_temp = x_temp.transpose(1, 0, 2)
+y_pred = self.modelSeqRec.predict(np.array([x_temp]))
+y_pred = y_pred[:, 2:, :]
+return self.fastdecode(y_pred)
+\end{lstlisting}
+
+\section{model\_sec\_rec()}\label{apdx:model_sec_rec}
+\begin{lstlisting}[language=python]
+def model_seq_rec(self, model_path):
+width, height, n_len, n_class = 164, 48, 7, len(chars) + 1
+rnn_size = 256
+input_tensor = Input((164, 48, 3))
+x = input_tensor
+base_conv = 32
+for i in range(3):
+	x = Conv2D(base_conv * (2 ** (i)), (3, 3))(x)
+	x = BatchNormalization()(x)
+	x = Activation('relu')(x)
+	x = MaxPooling2D(pool_size=(2, 2))(x)
+conv_shape = x.get_shape()
+x = Reshape(target_shape=(int(conv_shape[1]), int(conv_shape[2] * conv_shape[3])))(x)
+x = Dense(32)(x)
+x = BatchNormalization()(x)
+x = Activation('relu')(x)
+gru_1 = GRU(rnn_size, return_sequences=True, kernel_initializer='he_normal', name='gru1')(x)
+gru_1b = GRU(rnn_size, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru1_b')(x)
+gru1_merged = add([gru_1, gru_1b])
+gru_2 = GRU(rnn_size, return_sequences=True, kernel_initializer='he_normal', name='gru2')(gru1_merged)
+gru_2b = GRU(rnn_size, return_sequences=True, go_backwards=True, kernel_initializer='he_normal', name='gru2_b')(
+	gru1_merged)
+x = concatenate([gru_2, gru_2b])
+x = Dropout(0.25)(x)
+x = Dense(n_class, kernel_initializer='he_normal', activation='softmax')(x)
+base_model = Model(inputs=input_tensor, outputs=x)
+base_model.load_weights(model_path)
+return base_model
+\end{lstlisting}
+
+\section{chars}\label{apdx:chars}
+\begin{lstlisting}[language=python]
+chars = [
+    u"京", u"沪", u"津", u"渝", u"冀", u"晋", u"蒙", u"辽", u"吉", u"黑",
+    u"苏", u"浙", u"皖", u"闽", u"赣", u"鲁", u"豫", u"鄂", u"湘", u"粤",
+    u"桂", u"琼", u"川", u"贵", u"云", u"藏", u"陕", u"甘", u"青", u"宁",
+    u"新", u"0", u"1", u"2", u"3", u"4", u"5", u"6", u"7", u"8", u"9", u"A",
+    u"B", u"C", u"D", u"E", u"F", u"G", u"H", u"J", u"K", u"L",u"M",u"N",
+    u"P", u"Q", u"R", u"S", u"T", u"U", u"V", u"W", u"X", u"Y", u"Z",u"港",
+    u"学", u"使",u"警",u"澳",u"挂",u"军",u"北",u"南",u"广",u"沈",u"兰",u"成", 
+    u"济",u"海",u"民",u"航",u"空"]
+\end{lstlisting}
+
+\section{config.py}\label{apdx:config.py}
+\begin{lstlisting}[language=python]
+IN1 = 29
+IN2 = 31
+IN3 = 33
+IN4 = 35
+AvoidSensorfor = 40
+AvoidSensorbac = 38
+\end{lstlisting}
+
+\section{\_\_init\_\_.py}\label{apdx:__init__.py}
+\begin{lstlisting}[language=python]
+import RPi.GPIO as GPIO
+from .config import IN1,IN2,IN3,IN4,AvoidSensorfor,AvoidSensorbac
+
+def setup():
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(IN1, GPIO.OUT)
+    GPIO.setup(IN2, GPIO.OUT)
+    GPIO.setup(IN3, GPIO.OUT)
+    GPIO.setup(IN4, GPIO.OUT)
+    GPIO.setup(AvoidSensorfor, GPIO.IN)
+    GPIO.setup(AvoidSensorbac, GPIO.IN)
+    print('GPIO初始化完成')
+
+
+def destroy():
+    GPIO.cleanup()  # Release resource
+
+
+setup()
+\end{lstlisting}
+
+\section{motor.py}\label{apdx:motor.py}
+\begin{lstlisting}[language=python]
+import time
+import RPi.GPIO as GPIO
+
+
+def setStep(w1, w2, w3, w4):
+    from .config import IN1, IN2, IN3, IN4
+    GPIO.output(IN1, w1)
+    GPIO.output(IN2, w2)
+    GPIO.output(IN3, w3)
+    GPIO.output(IN4, w4)
+
+
+def stop():
+    print('电机stop')
+    setStep(0, 0, 0, 0)
+
+
+def forward(delay, steps):
+    print('电机forward')
+    for i in range(0, steps):
+        setStep(1, 0, 0, 0)
+        time.sleep(delay)
+        setStep(0, 1, 0, 0)
+        time.sleep(delay)
+        setStep(0, 0, 1, 0)
+        time.sleep(delay)
+        setStep(0, 0, 0, 1)
+        time.sleep(delay)
+
+
+def backward(delay, steps):
+    print('电机backward')
+    for i in range(0, steps):
+        setStep(0, 0, 0, 1)
+        time.sleep(delay)
+        setStep(0, 0, 1, 0)
+        time.sleep(delay)
+        setStep(0, 1, 0, 0)
+        time.sleep(delay)
+        setStep(1, 0, 0, 0)
+		time.sleep(delay)
+\end{lstlisting}
+
+\section{camera.py}\label{apdx:camera.py}
+\begin{lstlisting}[language=python]
+import picamera
+import requests
+import json
+camera = picamera.PiCamera()
+#from hyperlpr import HyperLPR_PlateRecogntion
+#import cv2
+
+
+def capture(path):
+    camera.capture(path)
+    print('摄像头捕获图像'+path)
+
+
+def detect(path):
+    print('开始识别图像'+path)
+    #image = cv2.imread(path)
+    #id = '123456'
+    #id = HyperLPR_PlateRecogntion(image)
+    url1 = "http://yindaheng98.top:3003"  # 车牌识别接口地址
+    files = {'file': open(path, 'rb')}
+    r = requests.post(url1, {'arg': 1}, files=files)
+    id = json.loads(r.text)
+    print(id)  # 返回值即为识别结果
+    if id == [[]]:
+        return 0
+    id = id[0][0][0]
+    return id
+
+
+def capture_detect():
+    path = "image.jpg"
+    capture(path)
+    return detect(path)
+\end{lstlisting}
+
+\section{CarEnter.py}\label{apdx:CarEnter.py}
+\begin{lstlisting}[language=python]
+import RPi.GPIO as GPIO
+import requests
+
+from ParkingMoney import AvoidSensorfor, AvoidSensorbac, destroy
+from ParkingMoney.motor import forward, backward, stop
+from ParkingMoney.camera import capture_detect
+
+AvoidValuefor = False
+AvoidValuebac = False
+LimitAngleFlag = 0
+
+
+url = 'http://yindaheng98.top:3001/enter/'
+
+
+def loopUp():
+    global LimitAngleFlag
+    AvoidValuefor = GPIO.input(AvoidSensorfor)
+    if AvoidValuefor == False:
+        id = capture_detect()
+        if id==0:
+            return
+        print("入口处传数据"+url+id)
+        response = requests.get(url+id)
+        print("服务器返回"+response.text)
+        if response.text[0:2] == 'ok':
+            print("开始抬杆")
+            if LimitAngleFlag == 0:
+                backward(0.003, 128)  # 512 steps --- 360 angle
+                LimitAngleFlag = 1
+        else:
+            print("出错")
+
+
+def loopDown():
+    global LimitAngleFlag
+    print("开始落杆")
+    if LimitAngleFlag == 1:
+        forward(0.003, 128)  # 512 steps --- 360 angle
+        LimitAngleFlag = 0
+
+
+if __name__ == '__main__':
+    try:
+        while True:
+            loopUp()
+            AvoidValuebac = GPIO.input(AvoidSensorbac)
+            if AvoidValuebac == False:
+                print("抬杆完成")
+                while True:
+                    AvoidValuebac = GPIO.input(AvoidSensorbac)
+                    if AvoidValuebac == True:
+                        print("车已开走")
+                        loopDown()
+                        break
+
+    # When 'Ctrl+C' is pressed, the child function destroy() will be  executed.
+    except KeyboardInterrupt:
+        destroy()
+\end{lstlisting}
+
+
+\section{CarOut.py}\label{apdx:CarOut.py}
+\begin{lstlisting}[language=python]
+import RPi.GPIO as GPIO
+import requests
+from cairosvg import svg2png
+#import cv2
+
+
+from ParkingMoney import AvoidSensorfor, AvoidSensorbac, destroy
+from ParkingMoney.motor import forward, backward, stop
+from ParkingMoney.camera import capture_detect
+
+AvoidValuefor = False
+AvoidValuebac = False
+LimitAngleFlag = 0
+
+
+url_exit = 'http://yindaheng98.top:3001/exit/'
+
+url_ispay = 'http://yindaheng98.top:3001/ispay/'
+
+
+def loopUp():
+    global LimitAngleFlag
+    AvoidValuefor = GPIO.input(AvoidSensorfor)
+    if AvoidValuefor == False:
+        id = capture_detect()
+        print("出口处传数据"+url_exit+id)
+        response = requests.get(url_exit+id)
+        if response.text=='error':
+            print('出错')
+            return
+        svg2png(bytestring=response.text, write_to='output.png')
+        #cv2.imshow('二维码', cv2.imread('output.png'))
+        print("出口处查询付款情况"+url_ispay+id)
+        response = requests.get(url_ispay+id)
+        print('result:'+response.text)
+        if response.text == 'yes':
+            print("开始抬杆")
+            if LimitAngleFlag == 0:
+                backward(0.003, 128)  # 512 steps --- 360 angle
+                LimitAngleFlag = 1
+
+
+def loopDown():
+    global LimitAngleFlag
+    print("开始落杆")
+    if LimitAngleFlag == 1:
+        forward(0.003, 128)  # 512 steps --- 360 angle
+        LimitAngleFlag = 0
+
+
+if __name__ == '__main__':  # Program start from here
+    try:
+        while True:
+            loopUp()
+            AvoidValuebac=GPIO.input(AvoidSensorbac)
+            if AvoidValuebac==False:
+                print ("111111111111!")
+                while True:
+                    print ("222222222!")
+                    AvoidValuebac=GPIO.input(AvoidSensorbac)
+                    if AvoidValuebac==True:
+                        print ("3333333333!")
+                        loopDown()
+                        break
+                       
+    except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child function destroy() will be  executed.
+        destroy()
+	\end{lstlisting}
