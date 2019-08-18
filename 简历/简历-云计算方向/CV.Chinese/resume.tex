@@ -97,7 +97,7 @@
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 	\section{链接}
-	个人主页:  \href{http://yindaheng98.top:8888}{\bf yindaheng98.top} \\
+	个人主页: \newline\href{http://yindaheng98.top:8888}{\bf yindaheng98.top:8888} \\
 	Github: \href{https://github.com/yindaheng98}{\bf @yindaheng98} \\
 	\sectionsep
 
@@ -140,6 +140,12 @@
 	\end{tabular}
 	\sectionsep
     
+	\subsection{云计算}
+	\location{基本掌握}
+	Docker \textbullet{} Docker-compose \\
+	Ubuntu Server 操作系统\\
+	\sectionsep
+
 	\subsection{并行计算}
 	\location{基本掌握}
 	Athread(神威·太湖之光) \textbullet{} SIMD \\
@@ -147,18 +153,6 @@
 	CUDA \textbullet{} MPI \\
     \sectionsep
     
-	\subsection{云计算}
-	\location{基本掌握}
-	Docker \textbullet{} Docker-compose \\
-	Ubuntu Server 操作系统\\
-	\sectionsep
-
-	\subsection{人工智能}
-	\location{基本掌握}
-	Pytorch \\
-	\location{大致了解}
-	Tensorflow \textbullet{} sklearn \\
-    \sectionsep
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%
 	%     COLUMN TWO
@@ -169,96 +163,88 @@
 \hfill
 \begin{minipage}[t]{0.73\textwidth}
     \section{个人陈述}
-    \subsection{研究兴趣}
+    \subsection{学习兴趣}
     \vspace{\topsep}
 	\begin{tightemize}
-		\item 应用研究兴趣：大规模并行计算、虚拟化云计算、医疗数据挖掘
-		\item 理论研究兴趣：机器学习算法
+		\item 应用学习兴趣：云计算、并行计算、虚拟化、医疗数据挖掘
+		\item 理论学习兴趣：机器学习算法
 	\end{tightemize}
     \subsection{个人特质}
     \vspace{\topsep}
     \begin{tightemize}
-        \item 历经两个数学竞赛和两个数学建模竞赛，具有较良好的数学抽象和建模能力
-		\item 大学4年间总代码量约3.5万行（不计Latex），具有良好的编程和架构能力
+        \item 历经两个数学竞赛和两个数学建模竞赛，具有良好的数学抽象和建模能力
+		\item 大学4年间总代码量约3.5万行（不计Latex和C++），具有良好的编程和架构能力
 		\item 领导完成三个开发项目，合作开发项目多个，具有良好的合作精神和领导能力
 	\end{tightemize}
     \sectionsep
-
 	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%     EXPERIENCE
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	\section{主要科研项目}
-	\runsubsection{机器学习算法库mlpack在神威·太湖之光系统上的移植}
-	\descript{}
-	\location{2019.03 | 江南大学超算俱乐部/神威·太湖之光软件部门}
-	\begin{tightemize}
-		\item 参与kernels部分的移植以及超算俱乐部成员培训
-		\item 依托此项目独立完成的太湖之光平台开发教程是目前俱乐部的内部培训教材之一
-	\end{tightemize}
-    \sectionsep
-
-	\runsubsection{基于生物电阻抗(BCM)和数据挖掘开发新的肾透析水负荷评价指标}
-	\descript{}
-	\location{2018.12 | 江南大学/无锡市人民医院肾内科}
-    \begin{tightemize}
-        \item 该项目旨在解决目前基于BCM的水负荷评估效果不佳的问题，分为以下三步：
-        \vspace{\topsep}
-        \begin{tightemize}
-            \item 在现有研究的BCM水负荷评估研究的基础上加入人体成分化验数据辅助评估
-            \item 基于上一步的研究成果开展与水负荷相关的患者短期健康状况预测方法研究
-            \item 将患者健康状况的预测范围推进到终末事件期，制定长期治疗方案提供参考
-        \end{tightemize}
-        \vspace{\topsep}
-		\item 论文 Specific Bioelectrical Impedance Vector Analysis (BIVA) in the Evaluation of Blood Composition in Patients Receiving Dialysis 正在撰写中
-	\end{tightemize}
-    \sectionsep
-
     \section{主要实践项目}
 	\runsubsection{\href{http://yindaheng98.top:8888/ExpertField}{\bf ExpertField}}
-	\descript{2019.03}
+	\descript{2019.03 | 主持项目}
 	\begin{tightemize}
 		\item 为中科院上海植生所解决了试验田人工采集数据的收集整理问题
-		\item 9人参与开发，总代码量近万行，包含STM32传感器数据采集、Android App人工数 据采集和云端数据融合与管理，是一套完整的物联网应用系统
-		\item 服务端由多种语言开发而成，是基于Docker虚拟化技术快速部署的混合微服务架构
+		\item 9人参与开发，总代码量近万行，包含的功能有传感器数据采集(STM32)、人工数据 采集(Android应用)和云端数据展示与管理，是一套完整的物联网应用系统
+		\item 服务器端由多种语言开发而成，是使用docker-compose快速部署的混合微服务架构
+	\end{tightemize}
+	\sectionsep
+    
+	\runsubsection{\href{https://github.com/yindaheng98/WebSiteAnalysisKit}{\bf WebSiteAnalysisKit}}
+	\descript{2018.12 | 合作项目}
+	\begin{tightemize}
+		\item JavaScript用户行为捕捉、Python用户行为分析、Hadoop用户层次聚类
+		\item Echarts多图表联动展示用户行为分析结果
 	\end{tightemize}
 	\sectionsep
 
-	\runsubsection{\href{https://github.com/yindaheng98/WebSiteAnalysisKit}{\bf WebSiteAnalysisKit}}
-	\descript{2018.12}
-	\begin{tightemize}
-		\item 使用JavaScript进行用户行为捕捉
-		\item Python用户行为分析、Hadoop用户层次聚类
-		\item 页面前端使用Echarts多图表联动展示用户行为数据
-	\end{tightemize}
-    \sectionsep
-    
 	\runsubsection{\href{http://yindaheng98.top:8888/Calendars/login.html
 	}{\bf Calendars}}
-	\descript{2017.12}
+	\descript{2017.10 | 主持项目}
 	\begin{tightemize}
-		\item 是集日常事务、课程表、成绩管理、项目规划功能于一体的跨平台网页应用
+		\item 集日常事务、课程表、成绩管理、项目规划功能于一体的跨平台网页应用
 		\item 参与人数5人，总代码量约4000行，依托两台阿里云服务器和一台实体服务器运作
 		\item 使用网络接口和Redis消息队列在服务器之间传递信息，并与教务处接口对接
 		\item 使用Redis阻塞队列和长轮询方式实现了多人即时项目流程编辑
 	\end{tightemize}
 	\sectionsep
+	
+	\section{科研项目}
+	\runsubsection{基于生物电阻抗和数据挖掘方法开发新的尿毒症患者病情综合评价工具}
+	\descript{}
+	\location{2018.12 | 江南大学/无锡市人民医院肾内科}
+	\begin{tightemize}
+		\item 项目要解决的问题：目前基于生物电阻抗分析的病情评价方法数据基础薄弱，结果不 准确；使用化学指标评价患者病情过程精准但昂贵而耗时，容易延误病情
+        \item 项目内容：挖掘肾内科积累的临床数据，寻找人体电阻抗和患者病情间的联系，开发 基于生物电阻抗技术的尿毒症病情综合评价仪器
+		\item 有一篇一作论文待发，将于今年九月前投稿至Clinical Nutrition(SCI Expanded)
+	\end{tightemize}
+	\sectionsep
 
+	\runsubsection{机器学习算法库在神威·太湖之光系统上的移植}
+	\descript{}
+	\location{2019.03 | 江南大学超算俱乐部/神威·太湖之光软件部门}
+	\begin{tightemize}
+		\item 目前完成了Darknet的移植，下一步将移植mlpack
+		\item 依托此项目独立完成了一篇太湖之光平台开发教程
+	\end{tightemize}
+    \sectionsep
+	
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%     AWARDS
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-	\section{所获奖项}
+	\section{竞赛和荣誉}
     \begin{tabular}{lll}
-        2019.05 & 全国大学生服务外包创新创业大赛 & 三等奖 \\
+        2019.05 & 第十届全国大学生服务外包创新创业大赛 & 三等奖 \\
         2019.04 & 美国大学生数学建模竞赛 & S奖 \\
         2018.11 & 江南大学2016-2017学年一等学业奖学金 &  \\
-        2018.09 & 全国大学生数学建模竞赛 & 国家级二等奖 \\
+        2018.09 & 2018全国大学生数学建模竞赛 & 国家级二等奖 \\
         2017.11 & 第九届全国大学生数学竞赛（非数学类） & 江苏赛区二等奖 \\
         2017.11 & 2016-2017年度国家奖学金 & \\
         2017.05 & 江苏赛普通高等学校第十四届数学竞赛数学竞赛 & 本科一级组一等奖\\
         2017.03 & 入选江南大学至善学院（荣誉学院）& \\
 	\end{tabular}
 \end{minipage}
-\end{document}  \documentclass[]{article}
+\end{document}

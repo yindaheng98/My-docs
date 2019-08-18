@@ -1,0 +1,227 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Deedy - One Page Two Column Resume
+% LaTeX Template
+% Version 1.2 (16/9/2014)
+%
+% Original author:
+% Debarghya Das (http://debarghyadas.com)
+%
+% Original repository:
+% https://github.com/deedydas/Deedy-Resume
+%
+% IMPORTANT: THIS TEMPLATE NEEDS TO BE COMPILED WITH XeLaTeX
+%
+% This template uses several fonts not included with Windows/Linux by
+% default. If you get compilation errors saying a font is missing, find the line
+% on which the font is used and either change it to a font included with your
+% operating system or comment the line out to use the default font.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% TODO:
+% 1. Integrate biber/bibtex for article citation under publications.
+% 2. Figure out a smoother way for the document to flow onto the next page.
+% 3. Add styling information for a "Projects/Hacks" section.
+% 4. Add location/address information
+% 5. Merge OpenFont and MacFonts as a single sty with options.
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% CHANGELOG:
+% v1.1:
+% 1. Fixed several compilation bugs with \renewcommand
+% 2. Got Open-source fonts (Windows/Linux support)
+% 3. Added Last Updated
+% 4. Move Title styling into .sty
+% 5. Commented .sty file.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Known Issues:
+% 1. Overflows onto second page if any column's contents are more than the
+% vertical limit
+% 2. Hacky space on the first bullet point on the second column.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[]{deedy-resume-openfont}
+\usepackage{fancyhdr}
+    
+\pagestyle{fancy}
+\fancyhf{}
+    
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     LAST UPDATED DATE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\lastupdated
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     TITLE NAME
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\namesection{Yin}{Daheng}{ \urlstyle{same}\href{mailto:yindaheng98@163.com}{yindaheng98@163.com} | +86 188 0057 2931 | Jiangnan University, Wuxi, Jiangsu}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%     COLUMN ONE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{minipage}[t]{0.25\textwidth} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     EDUCATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Education} 
+\subsection{Jiangnan University}
+\descript{Major in Internet of Things}
+\location{2016.09$\sim$2020.09}
+\sectionsep
+\subsection{Cambridge University}
+\descript{Summer School}
+\descript{Global Innovation and Leaderdship}
+\location{2017.08$\sim$2017.09}
+\sectionsep
+
+\section{Links}
+WebSite:\newline\href{http://yindaheng98.top:8888}{\bf yindaheng98.top:8888} \\
+Github:\href{https://github.com/yindaheng98}{\bf yindaheng98}
+\sectionsep
+
+\section{Skills}
+\subsection{Mathematic \newline{\small (Course results, out of 100)}}
+\begin{tabular}{ll}
+    Linear Algebra           & 92  \\
+    Further Mathematics I     & 96  \\
+    Further Mathematics II     & 97  \\
+    Probability \& Statistics   & 98  \\
+    Integral Transforms & 100 \\
+    Discrete Mathematics & 94 \\
+\end{tabular}
+\sectionsep
+\subsection{English}
+\begin{tabular}{ll}
+    IELTS & 6.5 \\
+    CET6  & 576 \\
+\end{tabular}
+\sectionsep
+\subsection{Programming \newline{\small (Lines of code)}}
+\begin{tabular}{ll}
+    Latex      & 14142  \\
+    Python     & 9808  \\
+    matlab     & 6216  \\
+    Java       & 6030  \\
+    Javascript & 3873  \\
+    HTML       & 3816  \\
+    PHP        & 3646  \\
+    C\#        & 1834  \\
+\end{tabular}
+\sectionsep
+
+\subsection{Parallel Programming}
+\location{Familiar}
+Athread(Sunway TaihuLight) \textbullet{} SIMD \\
+\location{Knowledge}
+CUDA \textbullet{} MPI \\
+\sectionsep
+
+\subsection{Cloud Computing}
+\location{Familiar}
+Docker \textbullet{} Docker-compose \\
+\location{Knowledge}
+Ubuntu Server \\
+
+\end{minipage} 
+\hfill
+\begin{minipage}[t]{0.73\textwidth} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%     EXPERIENCE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Research \& Development}
+\runsubsection{Develop new comprehensive condition assessment tool for uremic patients based on bioimpedance analysis and data mining}
+\descript{}
+\location{2018.12$\sim$currently | Jiangnan University/Department of Nephrology, Wuxi People's Hospital}
+\vspace{\topsep}
+\begin{tightemize}
+\item Project background: current bioimpedance analysis method is inaccurate; assay in comprehensive condition assessment for uremic patients is expensive and time consuming
+\item Project content: mining clinical data, reveal the relationship between bioimpedance and patient's condition, develop a comprehensive condition assessment machine
+\end{tightemize}
+\sectionsep
+
+\runsubsection{Mlpack migration on Sunway Platfrom}
+\descript{}
+\location{2019.04$\sim$currently | Supercomputer Club, JNU/Software department, Sunway R\&D Group}
+\begin{tightemize}
+    \item Darknet has been migrated, mlpack will be migrated next
+    \item Current outcomes: finished a textbook for club member training during migration
+\end{tightemize}
+\sectionsep
+
+\section{Projects}
+\runsubsection{\href{http://yindaheng98.top:8888/ExpertField}{\bf ExpertField}}
+	\descript{2019.03 | Leader}
+    \begin{tightemize}
+        \item Aiming at field data collection, both artificial(Android App) and automatic(STM32)
+        \item 9 cooperators, nearly 10,000 lines of code, a complete IoT system
+		\item Will be deployed in Institute of Plant Physiology \& Ecology, CAS
+		\item A fast deployable combined microservice system based on docker-compose
+	\end{tightemize}
+	\sectionsep
+
+	\runsubsection{\href{https://github.com/yindaheng98/WebSiteAnalysisKit}{\bf WebSiteAnalysisKit}}
+	\descript{2018.12 | Cooperator}
+	\begin{tightemize}
+		\item Implement GANomaly with Tensorflow, for camera abnormality judgment
+		\item Use Opencv and Tensorflow to convert video format to tfrecord dataset
+	\end{tightemize}
+    \sectionsep
+    
+	\runsubsection{\href{http://yindaheng98.top:8888/Calendars/login.html
+    }{\bf Calendars}}
+	\descript{2017.10 | Leader}
+	\begin{tightemize}
+		\item A cross-platform web application that integrates daily affairs, curriculum, achievement management, and project planning
+		\item 5 cooperators, 4000 lines of code, running on 2 aliyun servers and 1 physical server
+		\item Implemented multi-person instant process graph editing and a high-flow curriculum query component using Redis blocking queue and long polling
+	\end{tightemize}
+	\sectionsep
+
+\section{Awards} 
+\begin{tabular}{lll}
+    2019.05 & National Outsourcing Innovation Competition & 3rd Prize \\
+    2019.04 & COMAP's Mathematical Contest in Modeling & S Prize \\
+    2018.11 & Jiangnan University Academic Scholarship(2016-2017) & 1st Prize \\
+    2018.09 & National College Mathematical Contest in Modeling & 2nd Prize(National) \\
+    2017.11 & 9th National College Mathematical Contest & 2nd Prize(Provincial) \\
+    2017.11 & National Scholarship(2016-2017) & \\
+    2017.05 & 14th Jiangsu College Mathematical Contest & 1st Prize\\
+    2017.03 & Admitted by the Honor School, Jiangnan University& \\
+\end{tabular}
+\sectionsep
+
+\section{Personal Statement}
+\subsection{Research interest}
+    \vspace{\topsep}
+	\begin{tightemize}
+		\item Applied: Cloud computing, Parallel computing, Medical data mining
+		\item Theoretical: Machine Learning Algorithm
+	\end{tightemize}
+    \subsection{Personal qualities}
+    \vspace{\topsep}
+    \begin{tightemize}
+        \item After two mathematical contests and two mathematical contests in modeling, I have a good mathematical abstraction and modeling ability
+		\item After 35 thousand lines of coding, I have good coding and architectural ability
+		\item Hosted 3 development projects and cooperated variety of projects, I have a good spirit of cooperation and leadership
+	\end{tightemize}
+
+\end{minipage} 
+\end{document}  \documentclass[]{article}
