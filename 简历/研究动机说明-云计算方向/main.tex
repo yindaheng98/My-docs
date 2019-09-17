@@ -1,0 +1,71 @@
+\documentclass[a4paper]{ctexart}
+\usepackage{xeCJK}
+\usepackage[top=29mm,bottom=29mm,left=31.8mm,right=31.8mm]{geometry}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\setmainfont{Times New Roman}
+\setCJKmainfont[BoldFont={Songti SC Bold}]{SimSun}
+\setCJKfamilyfont{heiti}{SimHei}
+\renewcommand{\heiti}{\CJKfamily{heiti}\fontspec{Times New Roman}}
+
+\pagestyle{fancy}
+\fancyhead[C]{%
+  \footnotesize\sffamily
+  \yourname\quad\youremail\quad\itshape\yourweb}
+
+\newcommand{\soptitle}{研究动机说明}
+\newcommand{\yourname}{尹达恒}
+\newcommand{\youremail}{\href{mailto:yindaheng98@163.com}{
+    \textcolor{blue}{yindaheng98@163.com}}}
+\newcommand{\yourweb}{\href{http://yindaheng98.top}{
+    \textcolor{blue}{http://yindaheng98.top}}}
+
+\newcommand{\statement}[1]{\par\medskip
+  \underline{\textbf{#1:}}\space
+}
+
+\usepackage[
+  colorlinks,
+  breaklinks,
+  pdftitle={\yourname - \soptitle},
+  pdfauthor={\yourname},
+  unicode,
+  CJKbookmarks=true
+]{hyperref}
+
+\begin{document}
+
+\begin{center}\LARGE\soptitle\\
+	\large\yourname\ (江南大学物联网工程学院)
+\end{center}
+
+\hrule
+\vspace{1pt}
+\hrule height 1pt
+
+\bigskip
+
+\renewcommand{\baselinestretch}{1.3}
+\zihao{-4}
+理论学习兴趣：分布式系统、大规模并行计算
+
+应用研究兴趣：云计算系统、微服务系统的开发与部署、基于浏览器的跨平台移动应用开发、医疗数据挖掘
+
+\statement{我的理想}
+按照目前云计算和物联网行业的发展情况来看，在未来的某一天必定会出现如国家电网一般、使用云计算相关技术将全国重要计算设施连成一片的“国家计算网”。这个“国家计算网”将为全国的工业物联网及一些重要的基础设施(甚至是信息化部队的战时通信和计算)提供可靠的算力支持。
+
+但这种具有战略意义的重要基础设施建设不会完全由非国家控股的私营企业(如阿里云等)承担，也不太可能照搬国外已经发展完整的云计算技术路线。中国必然会依托国内的科研院所研发自己的云计算网络，并让“国家计算网”作为国有企业而存在。
+
+我的理想就是进入研究所或是未来可能出现的与这个“国家计算网”相关的国有企业，在其中参与中国国有云计算基础设施的建设工作。为此我希望在研究生和博士阶段能走向比较偏向基础的研究方向。
+
+\statement{研究动机}
+我对内存计算的兴趣始于大二一门课程实践项目(数据库课程设计，日程、课程、工程管理系统集成项目 "The Calendars"，\href{http://yindaheng98.top:8888/details/Calendars/TheCalendars.pdf}{项目介绍链接}，\href{http://yindaheng98.top:8888/Calendars/login.html}{项目成果链接})。在这个项目中，我所在的小组要开发一个能在多个客户端上进行数据视图同步更新的组件，为了降低更新延迟而使用了著名的分布式内存数据库Redis。
+Redis数据库的高效和协调使我惊叹不已，Redis中所用的集群同步与资源调配算法也成为我在分布式系统领域的启蒙资料。
+
+从此以后，我在大大小小的各类实践课程和软件开发竞赛中均扮演着系统架构师和“性能优化员”的角色，为团队成员提供高效而易于开发的系统架构，并参与性能要求较高的组件开发，对内存数据库的使用也越来越熟练(最近完成的包含Redis的课程实践项目：多终端、高容量的停车场道闸管理系统 "Parking Money"，物联网综合课程设计，\href{http://yindaheng98.top:8888/details/ParkingMoney/ppt.pdf}{项目介绍链接}，\href{https://github.com/yindaheng98/ParkingMoney}{项目源码链接})。
+
+Redis数据库使我看到了内存计算的强大威力。但是直到今天，我对内存计算的了解还只停留于实用阶段，没有在理论层面对内存计算进行深入的学习。因此，在研究生阶段，我想要走向比较基础的方向，在理论层面学习和研究内存计算。从兴趣和实践的角度出发，内存计算都是比较适合我的研究方向。
+
+\pagestyle{empty}
+\thispagestyle{empty}
+\end{document}
