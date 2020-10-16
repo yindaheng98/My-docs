@@ -1,4 +1,4 @@
-
+% !TeX root = ./homework.tex
 \section{寻找两个正序数组的中位数}
 \subsection{问题描述}
 \subsubsection*{Description}
@@ -85,7 +85,7 @@ $\therefore M_k<N_k\rightarrow M_k<U_{2k}$为真命题。
 
 \subsection{算法伪代码}
 见算法\ref{alg:fk}和算法\ref{alg:center}。
-\begin{algorithm}[t]
+\begin{algorithm}[htbp]
 \caption{在两个正序数组中找第$k$大数}\label{alg:fk}
 \SetKwProg{Fn}{Function}{ begin}{end}
 \Fn{FindK($\mathbb M$, $\mathbb N$, $k$)}{
@@ -108,7 +108,7 @@ $\therefore M_k<N_k\rightarrow M_k<U_{2k}$为真命题。
     \eIf{$M_d<N_d$}{\Return $FindK(\{M_i\in\mathbb M|i>d\}, \mathbb N, k-d)$\;}{\Return $FindK(\mathbb M, \{N_i\in\mathbb N|i>d\}, k-d)$\;}
 }
 \end{algorithm}
-\begin{algorithm}[t]
+\begin{algorithm}[htbp]
     \caption{找两个正序数组的中位数}\label{alg:center}
     \SetKwProg{Fn}{Function}{ begin}{end}
     \Fn{FindMedium($\mathbb M$, $\mathbb N$)}{

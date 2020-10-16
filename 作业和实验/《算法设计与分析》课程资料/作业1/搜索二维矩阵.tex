@@ -1,3 +1,4 @@
+% !TeX root = ./homework.tex
 \section{搜索二维矩阵}
 \subsection{问题描述}
 \subsubsection*{Description}
@@ -50,4 +51,47 @@
 
 \subsection{算法思路}
 
+设目标值为$x$，要查找的矩阵为$A_{m\times n}=(a_{i,j})$，满足：
+
+$$
+\left\{
+\begin{aligned}
+a_{i,j}\leq a_{i,j+1}&\quad (i\in[1,m],j\in[1,n-1])\\
+a_{i,j}\leq a_{i+1,j}&\quad (i\in[1,m-1],j\in[1,n])\\
+\end{aligned}
+\right.
+$$
+
+显然有如下定理：
+
+$$
+\begin{aligned}
+x>a_{0,n}\Rightarrow(\forall a_{1,j},j\in[1,n])(x>a_{0,j})\\
+x<a_{0,n}\Rightarrow(\forall a_{i,n},i\in[1,m])(x>a_{i,n})\\
+\end{aligned}
+$$
+
+即当目标值大于矩阵右上角值时，目标值必大于矩阵第一行的值；目标值小于矩阵右上角值时，目标值必小于矩阵第一列的值。因此，我们可以从矩阵右上角开始搜索，若目标值较大，则向下搜索；若目标值较小，则向左搜索，直到找到目标值或超出矩阵范围。此算法时间复杂度为$O(m+n)$。
+
+更进一步，对于向下或向左的搜索过程，我们可以使用二分查找，找出当前行不大于目标值的最大元素（目标值较小时）或当前列不小于目标值的最小元素（目标值较大时）。改进后算法的时间复杂度可以达到$O(log(m)+log(n))$。
+
 \subsection{算法伪代码}
+
+见算法\ref{alg:s2}。
+\begin{algorithm}[htbp]
+\caption{搜索二维矩阵算法伪代码}\label{alg:s2}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{FindNumber($A_{m,n}$, $x$)}{
+    \KwIn{待查矩阵$A_{m,n}=(a_{i,j})$、目标值$x$}
+	\KwOut{$A_{m,n}$中是否存在$a_{i,j}=x$}
+	\lIf{$m=0\vee n=0$}{\Return false}
+	\lIf{$x=a_{1,n}$}{\Return true}
+	\eIf{$x>a_{1,n}$}{
+		二分查找满足条件的$k$：$k>1\wedge a_{k,n}\geq x\wedge a_{k-1,n}< x$\;
+		\Return $FindNumber(A'_{k,n}=(a_{i,j})(i\in[k,n],j\in[1,n]),x)$\;
+	}{
+		二分查找满足条件的$k$：$k>1\wedge a_{1,k}\leq x\wedge a_{1,k+1}> x$\;
+		\Return $FindNumber(A'_{m,k}=(a_{i,j})(i\in[1,n],j\in[1,k]),x)$\;
+	}
+}
+\end{algorithm}
