@@ -1,4 +1,5 @@
-\section{找第2小数}
+% !TeX root = ./homework.tex
+\section{找第2大数}
 \subsection{问题描述}
 \subsubsection*{Description}
 给定一维\code{int}型数组，请找到第2大的数。
@@ -29,4 +30,32 @@
 
 \subsection{算法思路}
 
+由于题干并没有要求找任意第$k$大的数，因此本题可以直接使用线性查找，时间复杂度为$O(n)$。
+
 \subsection{算法伪代码}
+见算法\ref{alg:fn}。
+\begin{algorithm}[t]
+\caption{找第二大数算法伪代码}\label{alg:fn}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{FindNumber($S$, $n$)}{
+    \KwIn{数组$S$、数组长度$n$}
+    \KwOut{数组$S$中第二大的数}
+    $
+    R=\left\{
+        \begin{aligned}
+            \{S_0, S_1\}&(S_0<S_1)\\
+            \{S_1, S_0\}&(S_0>S_1)\\
+        \end{aligned}
+    \right.
+    $\;
+    \For{$i\in\{2,3,...,n\}$}{
+        \If{$S_i<R_0$}{
+            $R_1=R_0$\;
+            $R_0=S_i$\;
+        }\Else{
+            $R_1=S_i$\;
+        }
+    }
+    \Return $R_1$\;
+}
+\end{algorithm}

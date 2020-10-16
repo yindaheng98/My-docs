@@ -46,4 +46,83 @@
 
 \subsection{算法思路}
 
+设要查找的两个正序数组分别为$\mathbb M$和$\mathbb N$，其组合成的正序数组为$\mathbb U$。满足：
+$$
+\begin{aligned}
+    &(\forall M_i\in\mathbb M)(M_{i+1}\geq M_i)\wedge(\forall N_i\in\mathbb N)(N_{i+1}\geq N_i)\wedge\\
+    &\mathbb U=\{U_i|U_i\in\mathbb M\cup\mathbb N\}\wedge(\forall U_i\in\mathbb U)(U_{i+1}\geq U_i)\wedge\\
+    &k<|\mathbb M|\wedge k<|\mathbb N|
+\end{aligned}
+$$
+
+则有如下定理：
+
+$$
+M_k<N_k\Rightarrow M_k<U_{2k}
+$$
+
+证明：反证法。
+
+$$
+\begin{aligned}
+    &M_k<N_k\wedge M_k\geq U_{2k}\\
+    \Leftrightarrow& U_{2k}\leq M_k<N_k\\
+    \Rightarrow& U_{2k}\in\{M_i\in\mathbb{M}|1\leq i\leq k\}\cup\{N_i\in\mathbb{N}|1\leq i\leq k-1\}\\
+    \Rightarrow &|\{U_i\in\mathbb{U}|1\leq i\leq 2k\}|<|\{M_i\in\mathbb{M}|1\leq i\leq k\}\cup\{N_i\in\mathbb{N}|1\leq i\leq k-1\}|\\
+    \Rightarrow &2k\leq 2k-1\Rightarrow false\\
+\end{aligned}
+$$
+
+$\therefore M_k<N_k\rightarrow M_k<U_{2k}$为真命题。
+
+查找两个正序数组$\mathbb M$和$\mathbb N$的中位数的算法可以等价为一个查找其组合成的正序数组$\mathbb U$中第$2k$大数$U_{2k}$的算法：
+\begin{enumerate}
+    \item 若两数组长度和为偶数，则$2k=(|\mathbb M|+|\mathbb N|)/2$，查找$U_{2k}$和$U_{2k+1}$取平均值；
+    \item 若两数组长度和为奇数，则$2k=(|\mathbb M|+|\mathbb N|+1)/2$，查找$U_{2k}$。
+\end{enumerate}
+
+而根据前述定理$M_k<N_k\Rightarrow M_k<U_{2k}$，若$M_k<N_k$，则$U_{2k}$必然不在$\{M_i\in\mathbb{M}|1\leq i\leq k\}$中，因此可以直接舍弃该部分，在$\{M_i\in\mathbb{M}|k+1\leq i\leq |\mathbb M|\}$和$\mathbb N$中查找第$k$大的元素即可。显然，对于$M_k>N_k$时类似的情况也成立。此过程可以递归进行，直到$M_k=N_k$或某一轮的$\mathbb{M}$或$\mathbb{N}$为空。算法的时间复杂度为$O(log|\mathbb M|+log|\mathbb N|)$。
+
 \subsection{算法伪代码}
+见算法\ref{alg:fk}和算法\ref{alg:center}。
+\begin{algorithm}[t]
+\caption{在两个正序数组中找第$k$大数}\label{alg:fk}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{FindK($\mathbb M$, $\mathbb N$, $k$)}{
+    \KwIn{数组$\mathbb M$和$\mathbb N$、整数$k$}
+    \KwOut{数组$\mathbb M$和$\mathbb N$中第$k$大的数}
+    \lIf{$\mathbb M=\emptyset$}{\Return $N_k$}
+    \lIf{$\mathbb N=\emptyset$}{\Return $M_k$}
+    \lIf{$k=1$}{\Return $min(M_1,N_1)$}
+    $d=\left\lfloor\frac{k}{2}\right\rfloor$\;
+    \If{$d>|\mathbb M|$}{
+        \eIf(){$M_{|\mathbb M|}\leq N_d$}{\Return $FindK(\emptyset, \mathbb N, k-|\mathbb M|)$\;}{\Return $FindK(\mathbb M, \{N_i\in\mathbb N|i>d\}, k-d)$\;}
+    }
+    \If{$d>|\mathbb N|$}{
+        \eIf{$N_{|\mathbb N|}\leq M_d$}{\Return $FindK(\mathbb M, \emptyset, k-|\mathbb N|)$\;}{\Return $FindK(\{M_i\in\mathbb M|i>d\}, \mathbb N, k-d)$\;}
+    }
+    \If{$M_d=N_d$}{
+        \lIf{$k$为偶数}{\Return $M_d$(或$N_d$)}
+        \lIf{$k$为奇数}{\Return $min(M_{d+1},N_{d+1})$}
+    }
+    \eIf{$M_d<N_d$}{\Return $FindK(\{M_i\in\mathbb M|i>d\}, \mathbb N, k-d)$\;}{\Return $FindK(\mathbb M, \{N_i\in\mathbb N|i>d\}, k-d)$\;}
+}
+\end{algorithm}
+\begin{algorithm}[t]
+    \caption{找两个正序数组的中位数}\label{alg:center}
+    \SetKwProg{Fn}{Function}{ begin}{end}
+    \Fn{FindMedium($\mathbb M$, $\mathbb N$)}{
+        \KwIn{正序数组$\mathbb M$、$\mathbb N$}
+        \KwOut{数组$\mathbb M$和$\mathbb N$的中位数}
+        \eIf{$|\mathbb M|+|\mathbb N|$为奇数}{
+            \lIf{$\mathbb M=\emptyset$}{\Return $N_{\frac{|\mathbb M|+|\mathbb N|+1}{2}}$}
+            \lIf{$\mathbb N=\emptyset$}{\Return $M_{\frac{|\mathbb M|+|\mathbb N|+1}{2}}$}
+            \Return $FindK(\mathbb M, \mathbb N, \frac{|\mathbb M|+|\mathbb N|+1}{2})$\;
+        }{
+            \lIf{$\mathbb M=\emptyset$}{\Return $(N_{\frac{|\mathbb M|+|\mathbb N|}{2}}+N_{\frac{|\mathbb M|+|\mathbb N|}{2}+1})/2$}
+            \lIf{$\mathbb N=\emptyset$}{\Return $(M_{\frac{|\mathbb M|+|\mathbb N|}{2}}+M_{\frac{|\mathbb M|+|\mathbb N|}{2}+1})/2$}
+            \Return $(FindK(\mathbb M, \mathbb N, \frac{|\mathbb M|+|\mathbb N|}{2})+FindK(\mathbb M, \mathbb N, \frac{|\mathbb M|+|\mathbb N|}{2}+1))/2$\;
+
+        }
+    }
+    \end{algorithm}
