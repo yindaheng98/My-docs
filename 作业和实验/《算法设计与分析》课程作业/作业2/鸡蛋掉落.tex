@@ -1,53 +1,51 @@
 % !TeX root = ./homework.tex
-\section{搜索二维矩阵}
+\section{鸡蛋掉落}
 \subsection{问题描述}
 \subsubsection*{Description}
-编写一个高效的算法来搜索\code{m x n}矩阵\code{matrix}中的一个目标值\code{target}。该矩阵具有以下特性：
-\begin{enumerate}
-	\item 每行的元素从左到右升序排列。
-	\item 每列的元素从上到下升序排列。
-\end{enumerate}
+你将获得\code{K}个鸡蛋，并可以使用一栋从$1$到$N$共有$N$层楼的建筑。
+
+每个蛋的功能都是一样的，如果一个蛋碎了，你就不能再把它掉下去。
+
+你知道存在楼层$F$，满足 $0\leq F\leq N$任何从高于$F$的楼层落下的鸡蛋都会碎，从$F$楼层或比它低的楼层落下的鸡蛋都不会破。
+
+每次移动，你可以取一个鸡蛋（如果你有完整的鸡蛋）并把它从任一楼层$X$扔下（满足$1\leq X\leq N$）。
+
+你的目标是确切地知道$F$的值是多少。
+
+无论$F$的初始值如何，你确定$F$的值的最小移动次数是多少？
 
 \subsubsection*{Input}
 
-第一行输入\code{nums}表示有\code{nums}组测试。
+第一行输入\code{nums}表示有\code{nums}组测试
 
-每组测试输入\code{m}、\code{n}，\code{target}，分别表示矩阵的行列数以及目标值。
-
-接下来输入\code{m * n}的二维矩阵。
+每组测试输入\code{K}，\code{N}，表示有$K$个鸡蛋，$N$层楼
 
 \subsubsection*{Output}
 
-对每组测试数据输出 能否在矩阵中找到target。
-
-若能找到，输出\code{true}。
-
-若找不到，输出\code{false}。
+对每组测试数据，输出确定$F$的最小移动次数
 
 \subsubsection*{Sample Input}
 
-\code{1}
+\code{3}
 
-\code{5 5 5}
+\code{1 2}
 
-\code{1 4 7 11 15}
+\code{2 6}
 
-\code{2 5 8 12 19}
-
-\code{3 6 9 16 22}
-
-\code{10 13 14 17 24}
-
-\code{18 21 23 26 30}
+\code{3 14}
 
 \subsubsection*{Sample Output}
 
-\code{true}
+\code{2}
+
+\code{3}
+
+\code{4}
 
 \subsubsection*{提示}
-\code{m} <= 1000
+1 <= \code{K} <= 1000
 
-\code{n} <= 1000
+1 <= \code{N} <= 10000
 
 \subsection{算法思路}
 

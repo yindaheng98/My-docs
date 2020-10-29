@@ -1,32 +1,34 @@
 % !TeX root = ./homework.tex
-\section{找第2大数}
+\section{最长公共子序列}
 \subsection{问题描述}
 \subsubsection*{Description}
-给定一维\code{int}型数组，请找到第2大的数。
+给定两个字符串$A$和$B$，请计算这两个字符串的最长公共子序列长度。
 
 \subsubsection*{Input}
 
-输入第1行有一个\code{int}型正整数\code{m}(\code{m}<100)，表示有m行输入。
-
-每行输入的第一个数为int型正整数\code{n}(0<\code{n}<1000)，后面接着输入\code{n}个\code{int}型整数。
+第一行输入\code{M(M$\leq$10)}表示有\code{M}组数据。每组数据输入两行字符串，字符串的长度不长于500。
 
 \subsubsection*{Output}
 
-输出\code{m}行，每行为找第2大数。
+输出\code{M}行正整数，第\code{i}行表示第\code{i}组数据的最长公共子序列长度。
 
 \subsubsection*{Sample Input}
 
 \code{2}
 
-\code{8 3 8 4 1 6 7 3 2}
+\code{abcdefg}
 
-\code{9 2 4 5 9 8 7 6 4 3}
+\code{cemg}
+
+\code{abcdefgh}
+
+\code{ceaaegh}
 
 \subsubsection*{Sample Output}
 
-\code{2}
-
 \code{3}
+
+\code{4}
 
 \subsection{算法思路}
 

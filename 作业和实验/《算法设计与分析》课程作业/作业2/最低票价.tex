@@ -1,48 +1,69 @@
 % !TeX root = ./homework.tex
-\section{寻找两个正序数组的中位数}
+\section{最低票价}
 \subsection{问题描述}
 \subsubsection*{Description}
-给定两个大小为\code{m}和\code{n}的正序（从小到大）数组\code{nums1}和\code{nums2}。
+在一个火车旅行很受欢迎的国度，你提前一年计划了一些火车旅行。在接下来的一年里，你要旅行的日子将以一个名为\code{days}的数组给出。每一项是一个从\code{1}到\code{365}的整数。
 
-请你找出并返回这两个正序数组的中位数。
+火车票有三种不同的销售方式：
 
-进阶：你能设计一个时间复杂度为 $O(log (m+n))$ 的算法解决此问题吗？
+\begin{itemize}
+    \item 一张为期一天的通行证售价为\code{costs[0]}美元；
+    \item 一张为期七天的通行证售价为\code{costs[1]}美元；
+    \item 一张为期三十天的通行证售价为\code{costs[2]}美元。
+\end{itemize}
+
+通行证允许数天无限制的旅行。例如，如果我们在第 2 天获得一张为期 7 天的通行证，那么我们可以连着旅行 7 天：第 2 天、第 3 天、第 4 天、第 5 天、第 6 天、第 7 天和第 8 天。
+
+返回你想要完成在给定的列表\code{days}中列出的每一天的旅行所需要的最低消费。
 
 \subsubsection*{Input}
-
 第一行输入\code{nums}表示有\code{nums}组测试
 
-每组测试输入\code{n}和\code{m}，分别表示数组\code{nums1}和\code{nums2}的长度
+对每组测试用例
 
-然后输入正序数组\code{nums1}
+第一行输入\code{m}
 
-接着输入正序数组\code{nums2}
+第二行输入具有\code{m}个元素的\code{days}数组，\code{days[i]}表示你将在\code{days[i]}这天旅行
+
+第三行输入具有3个元素的\code{costs}数组，具体释义见Description
 
 \subsubsection*{Output}
 
-对每组测试数据输出两个正序数组的中位数
+对每组测试数据，输出你想要完成在给定的\code{days}数组 中列出的每一天的旅行所需要的最低消费。
 
 \subsubsection*{Sample Input}
 
 \code{2}
 
-\code{2 1}
+\code{6}
 
-\code{1 3}
+\code{1 4 6 7 8 20}
 
-\code{2}
+\code{2 7 15}
 
-\code{2 2}
+\code{12}
 
-\code{1 2}
+\code{1 2 3 4 5 6 7 8 9 10 30 31}
 
-\code{3 4}
+\code{2 7 15}
 
 \subsubsection*{Sample Output}
 
-\code{2.00000}
+\code{11}
 
-\code{2.50000}
+\code{17}
+
+\subsubsection*{提示}
+
+\code{1 $\leq$ days.length $\leq$ 365}
+
+\code{1 $\leq$ days[i] $\leq$ 365}
+
+\code{days}按顺序严格递增
+
+\code{costs.length $\equiv$ 3}
+
+\code{1 $\leq$ costs[i] $\leq$ 1000}
 
 \subsection{算法思路}
 

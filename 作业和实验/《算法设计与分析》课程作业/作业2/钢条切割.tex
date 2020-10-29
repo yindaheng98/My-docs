@@ -1,34 +1,35 @@
 % !TeX root = ./homework.tex
-\section{快速排序}
+\section{钢条切割}
 \subsection{问题描述}
 \subsubsection*{Description}
 
-给定一维\code{int}型数组\code{a[0,1,...,n-1]}，使用快速排序方法，对其进行从小到大排序，请输出递归过程中自顶自下第二层的划分结果，其中最顶层为第一层，即最终的排序结果层。
-
-划分时请用第1个元素作为划分基准，并使用课件上的方法进行一次扫描实现划分。
+给定一根长度为$n(n\leq10000)$的钢条以及一张价格表，请计算这根钢条能卖出的最大总收益。价格表表示为$(l_i,p_i), 1\leq i\leq k$。不在价格表中的钢条可卖出价格为$0$。
 
 \subsubsection*{Input}
 
-输入第1行有一个\code{int}型正整数\code{m}(\code{m}<100)，表示有\code{m}行输入。
-每行输入的第一个数为\code{int}型正整数\code{n}(8<\code{n}<1000)，后面接着输入\code{n}个\code{int}型整数。
+第一行输入\code{m(m$\leq$10)}表示有M组数据。每组数据第一行输入两个\code{int}型整数\code{n}和\code{k}，分别表示钢条长度以及价格表中不同价格数量。接下来一行输入\code{k}个价格的表示$(l_i,p_i)$，均为整数，$l_i$可能大于\code{n}。
 
 \subsubsection*{Output}
 
-对每组数据, 输出自顶自下第二层的划分结果。
+输出\code{m}行整数，第\code{i}行表示第\code{i}组数据的最大总收益。
 
 \subsubsection*{Sample Input}
 
 \code{2}
 
-\code{11 6 3 7 8 5 1 4 2 4 9 10}
+\code{27 3}
 
-\code{12 6 3 7 8 4 5 1 11 2 4 9 10}
+\code{35 41 61 49 73 74}
+
+\code{94 2}
+
+\code{21 55 88 64}
 
 \subsubsection*{Sample Output}
 
-\code{2 3 1 4 4 5 6 7 8 9 10}
+\code{0}
 
-\code{2 3 1 4 4 5 6 10 8 7 9 11}
+\code{220}
 
 \subsection{算法思路}
 
