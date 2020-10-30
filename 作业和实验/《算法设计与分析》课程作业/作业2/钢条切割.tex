@@ -33,38 +33,34 @@
 
 \subsection{算法思路}
 
+令$S_{L}=\{L_i|i\in[1,N]\}$表示长$L$的钢条在价格表$P=\{(l,p_l)|l\in\mathbb{N},p\in\mathbb{R}\}$下的最优切割方案，其价格为$P(S)$，显然最优切割方案有如下性质：
+
 \begin{enumerate}
-    \item 划分：以数组中的第一个元素为基准值，从数组中的第二个元素开始扫描，比基准值小的放右边，比基准值大的放左边。
-    \item 处理：
-    \begin{itemize}
-        \item 初始时基准坐标\code{p=}数组开头位置；
-        \item \code{i}从数组第二个元素开始遍历，若\code{i}位置的值大于基准值，则与\code{p}位置后一位的值交换，并令\code{p}自增；
-        \item 最后令数组开头的值与\code{p}位置的值交换。
-    \end{itemize}
-    \item 递归：使用同样的方法递归地处理左边和右边的子数组。
-    \item 输出第二层结果：设置一个层标记\code{l=1}，每次递归都将此值加1后作为参数传入，递归函数内若检测到\code{l>2}则退出并输出结果。
+    \item 最优子结构：$$(\forall S\subseteq S_{L})S=S_{\sum_{l\in S}l}$$
+    \item 重叠子问题：$$P(S_L)=max\{P(S_{L-l})+p_l|(l,p_l)\in P\}$$
 \end{enumerate}
 
+因此可以采用查表法，求解长$L$的钢条的最优切割方案时，使用数组存储$P(S_i)$，从$i=0$开始依次计算$P(S_L)=max\{P(S_{i-l})+p_l|(l,p_l)\in P\}$直到$i=L$即为要求的$P(S_L)$。
+
 \subsection{算法伪代码}
-见算法\ref{alg:qs}。
+见算法\ref{alg:cut}。
 \begin{algorithm}[htbp]
-\caption{快速排序算法伪代码}\label{alg:qs}
+\caption{钢条切割算法伪代码}\label{alg:cut}
 \SetKwProg{Fn}{Function}{ begin}{end}
-\Fn{QuickSort($S$, $n$)}{
-    \KwIn{未排序的数组$S$、数组长度$n$、递归层数$l$}
-    \KwOut{排好序的数组$S$}
-    \If{$(l\leq 2)\wedge (n>1)$}{
-        $p = 0$\;
-        \For{$i\in\{1,2,3,...,n\}$}{
-            \If{$S_0>S_{i}$}{
-                交换$S_{p+1}$和$S_{i}$\;
-                $p$自增1\;
+\Fn{SteelCut($L$, $P$)}{
+    \KwIn{钢条长度$L\in\mathbb{N}_+$、价格表$P=\{(l,p_l)|l\in\mathbb{N},p\in\mathbb{R}\}$}
+    \KwOut{最佳切割方案价格$P(S_L)$}
+    \For{$i\in\{1,2,3,...,L\}$}{
+        $P_i=0$\;
+        \For{$(l,p_l)\in P$}{
+            \eIf{$l\leq i$}{
+                $P_i=max(P_i,l+P_{i-l})$\;
+            }{
+                break\;
             }
         }
-        交换$S_0$和$S_p$\;
-        QuickSort($S$, $p$, $l + 1$)\;
-        QuickSort($S'=\{S_i|i\in[p+1,n-1]\}$, $n - (p + 1)$, $l + 1$)\;
+        记下$P_i$\;
     }
-    \Return
+    \Return $P_L$
 }
 \end{algorithm}
