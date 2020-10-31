@@ -32,32 +32,61 @@
 
 \subsection{算法思路}
 
-由于题干并没有要求找任意第$k$大的数，因此本题可以直接使用线性查找，时间复杂度为$O(n)$。
+设字符串$A=a_1a_2\dots a_m\dots a_M$和字符串$B=b_1b_2\dots b_n\dots b_N$的最长公共子序列为$C=C(A,B)=c_1c_2\dots c_k\dots c_K,c_k=a_{m_k}=b_{n_k},m_k<m_{k+1},n_k<n_{k+1}$。定义字符串前缀$A_i=a_1a_2\dots a_i,B_i=b_1b_2\dots b_i$，易得$C=C(A,B)$具有如下性质：
+
+\begin{itemize}
+    \item 最优子结构：$$C_i=C(A_{m_i},B_{n_i})$$
+    \item 重叠子问题：$$|C(A_m,B_n)|=\left\{\begin{aligned}
+        max\left(|C(A_{m-1},B_{n})|,|C(A_{m},B_{n-1})|\right)&\quad&a_m\not = b_n\\
+        |C(A_{m-1},B_{n-1})|+1&\quad&a_m = b_n\\
+    \end{aligned}\right.$$
+\end{itemize}
+
+因此可以采用查表法，求解字符串$A$和$B$的最长公共子序列长度时，使用矩阵存储$|C(A_m,B_n)|$，按重叠子问题公式从$m=n=0$开始依次计算$|C(A_m,B_n)|$，直到$m=M,n=N$即得到所需结果$|C(A,B)|$。
 
 \subsection{算法伪代码}
-见算法\ref{alg:fn}。
+见算法\ref{alg:cm}。
 \begin{algorithm}[htbp]
-\caption{找第二大数算法伪代码}\label{alg:fn}
+\caption{最长公共子序列算法伪代码}\label{alg:cm}
 \SetKwProg{Fn}{Function}{ begin}{end}
-\Fn{FindNumber($S$, $n$)}{
-    \KwIn{数组$S$、数组长度$n$}
-    \KwOut{数组$S$中第二大的数}
-    $
-    R=\left\{
+\Fn{CommonLongest($A$, $B$)}{
+    \KwIn{字符串$A=a_1a_2\dots a_m\dots a_M$、$B=b_1b_2\dots b_n\dots b_N$}
+    \KwOut{最长公共子序列长度$|C|=|C(A_{M},B_{N})|$}
+    $$
+    |C(A_1,B_1)|=\left\{
         \begin{aligned}
-            \{S_0, S_1\}&(S_0<S_1)\\
-            \{S_1, S_0\}&(S_0>S_1)\\
-        \end{aligned}
-    \right.
-    $\;
-    \For{$i\in\{2,3,...,n\}$}{
-        \If{$S_i<R_0$}{
-            $R_1=R_0$\;
-            $R_0=S_i$\;
-        }\Else{
-            $R_1=S_i$\;
+            0&\quad&a_1\not = b_1\\
+            1&\quad&a_1 = b_1\\
+        \end{aligned}\right.
+    $$
+    \For{$m\in\{2,3,...,M\}$}{
+        $$
+        |C(A_m,B_1)|=\left\{
+            \begin{aligned}
+                0&\quad&a_m\not = b_n\wedge|C(A_{m-1},B_1)|=0\\
+                1&\quad&a_m = b_n\vee|C(A_{m-1},B_1)|=1\\
+            \end{aligned}\right.
+        $$
+    }
+    \For{$n\in\{2,3,...,N\}$}{
+        $$
+        |C(A_1,B_n)|=\left\{
+            \begin{aligned}
+                0&\quad&a_m\not = b_n\wedge|C(A_1,B_{n-1})|=0\\
+                1&\quad&a_m = b_n\vee|C(A_1,B_{n-1})|=1\\
+            \end{aligned}\right.
+        $$}
+    \For{$m\in\{2,3,...,M\}$}{
+        \For{$n\in\{2,3,...,N\}$}{
+            $$
+            |C(A_m,B_n)|=\left\{
+                \begin{aligned}
+                    max\left(|C(A_{m-1},B_{n})|,|C(A_{m},B_{n-1})|\right)&\quad&a_m\not = b_n\\
+                    |C(A_{m-1},B_{n-1})|+1&\quad&a_m = b_n\\
+                \end{aligned}\right.
+            $$
         }
     }
-    \Return $R_1$\;
+    \Return $|C(A_{M},B_{N})|$\;
 }
 \end{algorithm}
