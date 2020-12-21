@@ -1,0 +1,29 @@
+% !TeX root = ./homework.tex
+\section{题解2}
+\subsection{问题分析}
+该问题是一个典型的贪心算法问题：
+\begin{itemize}
+    \item 最优子结构：一个在$[0,t]$时间段内最优的活动安排方案，去掉最后一个活动后，在$[0,t-t_\text{最后一个活动}]$时间段内也必然是最优方案
+    \item 贪心选择性：每次必然选择结束时间最早的方案，因为结束时间最早意味着有更多的机会安排其他活动
+\end{itemize}
+因此，在每次选择时，只需要在可以在任一教师安排的活动中选择结束时间最早的活动即可。
+
+\subsection{算法伪代码}
+见算法\ref{alg:2}。
+\begin{algorithm}[htbp]
+\caption{题解2算法伪代码}\label{alg:2}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{QuickSort($S$)}{
+    \KwIn{班会活动集合$S$}
+    \KwOut{两个教室中的活动集合$S_1$、$S_2$}
+    将$S$按结束时间排序\;
+    \For{$i\in\{1,2,3,...,|S|\}$}{
+        \uIf{$S[i]$开始时间晚于$S_1$最后一个活动的结束时间}{
+            将$S[i]$安排到$S_1$\;
+        }\ElseIf{$S[i]$开始时间晚于$S_2$最后一个活动的结束时间}{
+            将$S[i]$安排到$S_2$\;
+        }
+    }
+    \Return $S_1,S_2$
+}
+\end{algorithm}

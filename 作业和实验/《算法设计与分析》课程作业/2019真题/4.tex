@@ -1,0 +1,19 @@
+% !TeX root = ./homework.tex
+\section{题解4}
+\subsection{问题分析}
+首先，该方法不是最优方法。如果$d_{12}=2$、$d_{24}=1$、$d_{34}=2$，且其余路径长度都满足$d_{ij}=d_{ik}+d{kj}$，即点$v_1,v_2,v_4,v_3$一字排开，那么算法首先会将$a_2$分给$r_1$，之后会将$a_1$分给$r_2$，代价总和为$6$，然而最优方案应该是$a_1$分给$r_1$、$a_2$分给$r_2$，代价总和为4。
+
+该问题是一个典型的二部图最大匹配问题：
+\begin{itemize}
+    \item 构建二部图：计算每个出租车到每个乘客之间的距离，作为二部图的边权值
+    \item 计算二部图：计算二部图的最小匹配方案
+\end{itemize}
+
+\subsection{算法伪代码}
+见算法\ref{alg:4}。
+\begin{algorithm}[htbp]
+\caption{题解4算法伪代码}\label{alg:4}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{QuickSort($A$)}{
+}
+\end{algorithm}

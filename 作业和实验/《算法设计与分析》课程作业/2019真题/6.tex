@@ -1,0 +1,53 @@
+% !TeX root = ./homework.tex
+\section{题解6}
+\subsection{问题分析}
+显然，对于$n$个点，它们的间距有$n-1$个，将其组织为一个数组$A$，原覆盖问题就可以看作选择这个数组中的连续几个值，显然，总共有$(n-1)+(n-2)+\dots+2+1=n(n-1)/2$种选法遍历所有这些选法就能得到$O(n^2)$时间的算法。
+
+但实际上这$n(n-1)/2$种选法并不需要全部遍历，可以从第一个间距开始增加，如果长度超过绳长度，就将开头处的距离减去，直到增加到最后一个间距，时间复杂度为$O(n)$。
+
+\subsection{算法伪代码}
+$O(n^2)$时间的算法见算法\ref{alg:6-1}。
+\begin{algorithm}[htbp]
+\caption{题解6算法伪代码}\label{alg:6-1}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{$F(T)$}{
+    \KwIn{点的间距列表$A$，绳子长度$L$}
+    \KwOut{覆盖的最大点数$m$}
+    $m=0$\;
+    \For{$i\in [1,|A|]$}{
+        $S=0,k=1$\;
+        \For{$j\in [i,|A|]$}{
+            $S=S+A[j]$\;
+            $k=k+1$\;
+            \If{$S<=L\wedge k>m$}{
+                $m=k$\;
+            }
+        }
+    }
+    \Return $m$
+}
+\end{algorithm}
+$O(n)$时间的算法见算法\ref{alg:6-2}。
+\begin{algorithm}[htbp]
+\caption{题解6算法伪代码}\label{alg:6-2}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{$F(T)$}{
+    \KwIn{点的间距列表$A$，绳子长度$L$}
+    \KwOut{覆盖的最大点数$m$}
+    $m=0$\;
+    \For{$i\in [1,|A|]$}{
+        $S=0,k=1$\;
+        \For{$j\in [i,|A|]$}{
+            $S=S+A[j]$\;
+            $k=k+1$\;
+            \If{$S>L$}{
+                break\;
+            }
+            \If{$S<=L\wedge k>m$}{
+                $m=k$\;
+            }
+        }
+    }
+    \Return $m$
+}
+\end{algorithm}

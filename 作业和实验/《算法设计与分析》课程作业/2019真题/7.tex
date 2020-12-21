@@ -1,0 +1,40 @@
+% !TeX root = ./homework.tex
+\section{题解7}
+\subsection{问题分析}
+此问题可以是典型的动态规划问题。对于物品$a_i$和剩余$C_1$、$C_2$、$C_3$的三个背包，背包方案的最优解必然是下面三个中价值最大的那个：
+\begin{itemize}
+    \item 物品$a_i$不放入任何背包，$C_1$、$C_2$、$C_3$中装入剩下的物品
+    \item 物品$a_i$放入背包1，$C_1-w_i$、$C_2$、$C_3$中装入剩下的物品
+    \item 物品$a_i$放入背包2，$C_1$、$C_2-w_i$、$C_3$中装入剩下的物品
+    \item 物品$a_i$放入背包3，$C_1$、$C_2$、$C_3-w_i$中装入剩下的物品
+\end{itemize}
+由此可得最优解$M(i,C_1,C_2,C_3),i\in [1,n]$的递推关系式：
+$$
+    M(i,C_1,C_2,C_3)=max\left\{\begin{aligned}
+         & M(i-1,C_1,C_2,C_3)         \\
+         & M(i-1,C_1-w_i,C_2,C_3)+v_i \\
+         & M(i-1,C_1,C_2-w_i,C_3)+v_i \\
+         & M(i-1,C_1,C_2,C_3-w_i)+v_i
+    \end{aligned}\right\}
+$$
+
+\subsection{算法伪代码}
+见算法\ref{alg:7}。
+\begin{algorithm}[htbp]
+    \caption{题解7算法伪代码}\label{alg:7}
+    \SetKwProg{Fn}{Function}{ begin}{end}
+    \Fn{$M$}{
+        \KwIn{物品列表$A=\{(v_i,w_i)|i\in[1,n]\}$，背包容量$C_1,C_2,C_3$}
+        \KwOut{能装入的物品总价值$M$}
+        使用全局变量$\bm M$存储中间值\;
+        \If{$\bm M[i][(C_1,C_2,C_3)]$已计算}{
+            \Return{$\bm M[i][(C_1,C_2,C_3)]$}\;
+        }
+        $M=M_1=M_2=M_3=M(i-1,C_1,C_2,C_3)$\;
+        \If{$C_1>w_i$}{$M_1=M(i-1,C_1-w_i,C_2,C_3)+v_i$}
+        \If{$C_2>w_i$}{$M_2=M(i-1,C_1,C_2-w_i,C_3)+v_i$}
+        \If{$C_3>w_i$}{$M_3=M(i-1,C_1,C_2,C_3-w_i)+v_i$}
+        $M=max\{M,M_1,M_2,M_3\}$\;
+        \Return $M$\;
+    }
+\end{algorithm}

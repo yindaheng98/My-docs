@@ -1,0 +1,37 @@
+% !TeX root = ./homework.tex
+\section{题解5}
+\subsection{问题分析}
+此问题可以通过分治求解，对于上部的焊点$T_i$和下部的焊点$B_i$，可以通过如下方式求它们的相交次数：
+\begin{itemize}
+    \item 分治：分别递归地计算$T_i,i\in[1,n/2]$和$T_i,i\in[n/2+1]$的相交点个数，并对$T_i,i\in[1,n/2]$和$T_i,i\in[n/2+1]$所连接的下部焊点编号进行排序
+    \item 组合：对于$T_i,i\in[1,n/2]$，将其对应的上部焊点编号与$T_i,i\in[n/2+1]$对应的上部焊点编号比较，$T_i,i\in[1,n/2]$上部编号较大的与$T_i,i\in[n/2+1]$上部编号较小的相交，求出相交数量；对于$T_i,i\in[n/2+1]$同理。最终求出相交点数之和即最终结果。
+\end{itemize}
+
+\subsection{算法伪代码}
+见算法\ref{alg:5}。
+\begin{algorithm}[htbp]
+\caption{题解5算法伪代码}\label{alg:5}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{$F(T)$}{
+    \KwIn{上部焊点对应的下部焊点编号$T$，$T_i=j$表示上部焊点$i$与下部焊点$j$相连}
+    \KwOut{相交焊点数$S$，所有的下部焊点编号排序结果$B$}
+    $S_1,B_1=F(\{T_i|i\in[1,|T|/2]\})$\;
+    $S_2,B_2=F(\{T_i|i\in[|T|/2+1,|T|]\})$\;
+    $S=S_1+S_2$\;
+    $B=\{\},k=1,t=0$\;
+    \Repeat{}{
+        \eIf{$B_1[i]>B_2[j]$}{
+            $B[k]=B_2[j]$\;
+            $j=j+1$\;
+            $t=t+1$\;
+        }{
+            $B[k]=B_1[i]$\;
+            $i=i+1$\;
+            $S=S+t$\;
+            $t=j-1$\;
+        }
+        $k=k+1$\;
+    }
+    \Return $S,B$
+}
+\end{algorithm}

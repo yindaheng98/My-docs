@@ -1,0 +1,38 @@
+% !TeX root = ./homework.tex
+\section{题解3}
+\subsection{问题分析}
+该问题是一个典型的动态规划问题：
+\begin{itemize}
+    \item 最优子结构：一个选择了$A[k]$且在数组$[1,k]$位内最优的选择方案，，在$[1,k-2]$位内也必然是最优方案
+    \item 重叠子问题：$[1,k]$位内最优方案等于下列方案中最优的方案：
+    \begin{itemize}
+        \item $[1,k-3]$位内的最优方案加$A[k]$
+        \item $[1,k-2]$位内的最优方案
+        \item $[1,k-1]$位内的最优方案
+    \end{itemize}
+\end{itemize}
+因此，有最优方案$F(A[1:k])$递推公式：
+$$F(A[1:k])=max\{F(A[1:k-3])+A[k],F(A[1:k-2]),F(A[1:k-1])\}$$
+
+\subsection{算法伪代码}
+见算法\ref{alg:3}。
+\begin{algorithm}[htbp]
+\caption{题解3算法伪代码}\label{alg:3}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{QuickSort($A$)}{
+    \KwIn{数组$A$}
+    \KwOut{最大的总和值$S$}
+    初始化数组$B$，长度和数组$A$相同\;
+    \lIf{数组$A$长度为0}{\Return{0}}
+    $B[1]=A[1]$\;
+    \lIf{数组$A$长度为1}{\Return{$B[1]$}}
+    $B[2]=max\{B[1],A[2]\}$\;
+    \lIf{数组$A$长度为2}{\Return{$B[2]$}}
+    $B[3]=max\{B[1],B[2],A[3]\}$\;
+    \lIf{数组$A$长度为3}{\Return{$B[3]$}}
+    \For{$i\in\{4,...,|A|\}$}{
+        $B[i]=max\{B[i-3]+A[i],B[i-2],B[i-1]\}$\;
+    }
+    \Return $B[|A|]$
+}
+\end{algorithm}
