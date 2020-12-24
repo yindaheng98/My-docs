@@ -1,0 +1,45 @@
+% !TeX root = ./homework.tex
+\section{题解9}
+\subsection{问题分析}
+\begin{itemize}
+    \item 首先要明确流网络的源点和汇点。题中所给的流网络描述了从进货到销售的过程，货源就是源点，售出到顾客就是汇点；
+    \item 其次要明确点的含义。题中所给的流网络描述了货物每天的流转过程，即是售出还是留到下一天，因此，流网络中的点就是天数；
+    \item 最后明确边权值。
+          \begin{itemize}
+              \item 从源点出发的边即是进货，容量为$a_i$，费用为$p_i$；
+              \item 从某一天到下一天的边表示货物留到了下一天，容量为$b_i$、费用为$w_i$；
+              \item 到汇点的边表示售出，容量为$c_i$，费用为$-s_i$。
+          \end{itemize}
+\end{itemize}
+
+\subsection{建模}
+在此图上求最大流即可：
+
+\definecolor{yellow1}{rgb}{1,0.8,0.2}
+\begin{tikzpicture}[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,semithick]
+    \tikzstyle{every state}=[fill=yellow1,draw=none,text=black]
+
+    \node[state](S) at (-6, -1){$S$};
+    \node[state](d1) at (0, 3){$Day 1$};
+    \node[state](d2) at (0, 1){$Day 2$};
+    \node(dd1) at (0, -0.5){$\cdots$};
+    \node[state](d3) at (0, -2){$Day i$};
+    \node(dd2) at (0, -3.5){$\cdots$};
+    \node[state](d4) at (0, -5){$Day 4$};
+    \node[state](T) at (6, -1){$T$};
+
+    \path (S)
+    edge[bend left=26] node {$a_1,p_1$} (d1)
+    edge[bend left=12] node {$a_2,p_2$} (d2)
+    edge[bend right=12] node {$a_3,p_3$} (d3)
+    edge[bend right=26] node {$a_4,p_4$} (d4);
+    \path (d1) edge  node {$b_1,w_1$} (d2);
+    \path (d2) edge  node {$b_2,w_2$} (dd1);
+    \path (dd1) edge  node {$b_{i-1},w_{i-1}$} (d3);
+    \path (d3) edge  node {$b_i,w_i$} (dd2);
+    \path (dd2) edge  node {$b_{n-1},w_{n-1}$} (d4);
+    \path (d1) edge[bend left=26]  node {$c_1,-s_1$} (T);
+    \path (d2) edge[bend left=12]  node {$c_2,-s_2$} (T);
+    \path (d3) edge[bend right=12]  node {$c_3,-s_3$} (T);
+    \path (d4) edge[bend right=26]  node {$c_4,-s_4$} (T);
+\end{tikzpicture}
