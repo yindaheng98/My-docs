@@ -1,0 +1,22 @@
+% !TeX root = ./homework.tex
+\section{题解5}
+\subsection{问题分析}
+此问题是典型的动态规划问题：如果存在一个子集$b\subseteq a$，$\sum_{i\in b}i=B$，那么必有$\sum_{i\in b,i\not =j}i=B-j$。因此有递推公式：
+
+$$
+b=F(n,B)=\left\{
+\begin{aligned}
+F(n-1,B-a_{n})\cup\{a_n\}&\quad&F(n-1,B-a_{n})\not =\not\exists\\
+F(n-1,B)&&F(n-1,B)\not =\not\exists\\
+\not\exists&&otherwise\\
+\end{aligned}
+\right.
+$$
+
+\subsection{初始化条件}
+显然，$F(i,b)$在前$i$个数之和都小于$b$的情况下是必然不存在的，因此有初始化条件：
+$$
+(\forall i\in[1,n],b\in[0,b],\sum_{i=1}^na_i<b)F(i,b)=\not\exists
+$$
+和
+$$F(0,b)=\emptyset$$

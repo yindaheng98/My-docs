@@ -1,0 +1,28 @@
+% !TeX root = ./homework.tex
+\section{题解6}
+\subsection{问题分析}
+显然，这个问题只不过是最短路径问题的一个变型，在计算路径长度时加上点产生的代价即可。
+
+\subsection{算法伪代码}
+见算法\ref{alg:6}。
+\begin{algorithm}[htbp]
+\caption{题解6算法伪代码}\label{alg:6}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{F($E,V$)}{
+    \KwIn{邻接矩阵$E$，顶点权值$V$，起点$i$，终点$j$}
+    \KwOut{起点到终点的最短距离$s$}
+    记录起点$i$到每个顶点距离$S$，$S[k]=E[i,k],k\in[1,n]$\;
+    记录未找到最短路径的点集合$E'=E$，将点$i$从$E'$中去除\;
+    初始化一个队列$Q$\;
+    \Repeat{$E'=\emptyset$}{
+        找到$E'$中$S[k]$最小的点$k$\;
+        将点$k$从$E'$中去除\;
+        \For{$l\in E'$}{
+            \If{$S[k]+E[k,l]<S[l]$}{
+                $S[l]=S[k]+E[k,l]$\;
+            }
+        }
+    }
+    \Return $S[j]$
+}
+\end{algorithm}

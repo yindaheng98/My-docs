@@ -1,0 +1,39 @@
+% !TeX root = ./homework.tex
+\section{题解4}
+\subsection{问题分析}
+显然，本题的贪心选择性是：每个小朋友$p_i$都只要选择能与自己匹配的最大的$p_j$即可。
+
+可以通过反证法证明此方法最优：如果对于某个配对$p_i,p_j$，存在一个$p_k<p_j$，使$p_i$不与$p_j$配对而与$p_k$配对时，能增加一个配对$p_j,p_l$，如果要这种情况成立，那么必然有：
+$$
+\left\{
+\begin{aligned}
+    p_i+p_j\leq B\\
+    p_k<p_j\\
+    p_i+p_k\leq B\\
+    p_k+p_l>B\\
+    p_j+p_l\leq B\\
+\end{aligned}
+\right.
+$$
+但显然，$p_j+p_l>p_k+p_l>B$，不可能有$p_j+p_l\leq B$，因此此方法不是最优的情况不存在。
+
+\subsection{算法伪代码}
+见算法\ref{alg:4}。
+\begin{algorithm}[htbp]
+\caption{题解4算法伪代码}\label{alg:4}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{F($p_i$)}{
+    \KwIn{小朋友的数字牌$\{p_i\}$、匹配和限制$B$}
+    \KwOut{能匹配的最多对小朋友$C$}
+    对$\{p_i\}$进行排序\;
+    \Repeat{$\{p_i\}$中只剩1个或0个元素}{
+        选出$\{p_i\}$中最大的元素$p$\;
+        从$\{p_i\}$中删去$p$\;
+        \lIf{$p\geq B$}{continue}
+        选出$\{p_i\}$中$\leq B-p$最大的元素$p'$\;
+        从$\{p_i\}$中删去$p'$\;
+        $C=C+1$\;
+    }
+    \Return{$C$}
+}
+\end{algorithm}

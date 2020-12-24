@@ -1,0 +1,35 @@
+% !TeX root = ./homework.tex
+\section{题解7}
+\subsection{问题分析}
+对于某一天的气温$T[i]$后的气温要么比它高，要么比他低。
+\begin{itemize}
+    \item 如过$T[i]$后的某天比它低：需要继续向前查找
+    \item 如过$T[i]$后的某天比它高：$T[i]$到该天之间的全部$Warmer$值都等于该天温度
+\end{itemize}
+
+\subsection{算法伪代码}
+见算法\ref{alg:7}。
+\begin{algorithm}[htbp]
+    \caption{题解7算法伪代码}\label{alg:7}
+    \SetKwProg{Fn}{Function}{ begin}{end}
+    \Fn{$T$}{
+        \KwIn{温度列表$T$}
+        \KwOut{后续气温中第一个比$T[i]$高的温度$Warmer[i]$}
+        初始化一个栈$S$，$T[1]$入栈\;
+        $k=1$\;
+        \For{$i\in[2,n]$}{
+            \If{$T[i]>T[S_{top}]$}{
+                \Repeat{$T[i]\leq T[S_{top}]$或栈$S$为空}{
+                    $Warmer[S_{top}]=T[i]$\;
+                    $S$出栈\;
+                }
+            }
+            $i$入栈$S$\;
+        }
+        \Repeat{栈$S$为空}{
+            $Warmer[S_{top}]=n+1$\;
+            $S$出栈\;
+        }
+        \Return{$Warmer$}
+    }
+\end{algorithm}

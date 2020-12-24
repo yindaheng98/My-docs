@@ -1,0 +1,37 @@
+% !TeX root = ./homework.tex
+\section{题解2}
+\subsection{问题分析}
+最长公共子串问题是一个典型的动态规划问题，最长公共子序列在删去最后一个公共字符后，仍然是剩下字符串的最长公共子序列，因此可得如下递推公式：
+$$
+C[i,j]=\left\{
+\begin{aligned}
+    max\{C[i-1,j],C[i,j-1]\}&\quad&(A[i]=B[j])\\
+    C[i-1,j-1]+1\}&&(A[i]\not =B[j])\\
+\end{aligned}
+\right.
+$$
+
+\subsection{算法伪代码}
+见算法\ref{alg:2}。
+\begin{algorithm}[htbp]
+\caption{题解2算法伪代码}\label{alg:2}
+\SetKwProg{Fn}{Function}{ begin}{end}
+\Fn{F($S$)}{
+    \KwIn{字符串$A,B$}
+    \KwOut{最长公共子串长度$C$}
+    \leIf{$A[i]=B[j]$}{$C[1,1]=1$}{$C[1,1]=0$}
+    \For{$i\in[2,m]$}{
+        \For{$j\in[2,n]$}{
+            $$
+            C[i,j]=\left\{
+            \begin{aligned}
+                max\{C[i-1,j],C[i,j-1]\}&\quad&(A[i]=B[j])\\
+                C[i-1,j-1]+1\}&&(A[i]\not =B[j])\\
+            \end{aligned}
+            \right.
+            $$
+        }
+    }
+    \Return $C[m,n]$\;
+}
+\end{algorithm}
