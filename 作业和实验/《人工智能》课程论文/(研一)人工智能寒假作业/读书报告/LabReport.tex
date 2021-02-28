@@ -1,0 +1,197 @@
+\documentclass[a4paper]{ctexart}
+\usepackage{xeCJK}
+\usepackage{setspace}
+\usepackage{graphicx,wrapfig}
+\usepackage{fontspec,xunicode,xltxtra}
+\usepackage{fancyhdr,titlesec,titletoc}
+\usepackage[titletoc]{appendix}
+\usepackage[top=29mm,bottom=29mm,left=31.8mm,right=31.8mm]{geometry}
+\usepackage{enumerate,enumitem}
+\usepackage{caption}
+\usepackage{amsmath,amssymb,bm,array}
+\usepackage{cite}
+\usepackage{diagbox}
+\usepackage{algorithm,algorithmicx,algpseudocode}
+\usepackage{multirow}
+\setmainfont{Times New Roman}
+%\setCJKmainfont{SimSun}
+\setCJKfamilyfont{heiti}{SimHei}
+\renewcommand{\heiti}{\CJKfamily{heiti}\fontspec{Times New Roman}}
+
+\newcommand{\mycaptionfont}{\heiti\zihao{5}}
+\captionsetup[figure]{name={\mycaptionfont 图},labelsep=period}
+\captionsetup[table]{name={\mycaptionfont 表},labelsep=period}
+\floatname{algorithm}{\mycaptionfont 算法}
+\captionsetup[algorithm]{labelsep=period}
+\renewcommand{\captionfont}{\mycaptionfont}
+\renewcommand{\captionlabelfont}{\mycaptionfont}
+
+\ctexset {
+	section = {
+		number = \arabic{section},
+		format = \zihao{4}\bfseries,
+	},
+	subsection = {
+		number = \arabic{section}.\arabic{subsection},
+		format = \zihao{-4}\bfseries,
+	},
+	subsubsection = {
+		number = \arabic{section}.\arabic{subsection}.\arabic{subsubsection},
+		format = \zihao{-4}\bfseries,
+	}
+}
+\setlist[enumerate]{itemindent=2em,listparindent=2em,leftmargin=0em,label=\arabic*、}
+
+\setlength\parskip{.5\baselineskip}
+\fancypagestyle{plain}{\pagestyle{fancy}}%改变章节首页页眉
+\pagestyle{fancy}
+\lhead{\kaishu~《人工智能》课程作业~}
+\rhead{\kaishu~201857~尹达恒}
+\cfoot{\thepage}
+
+\renewcommand{\abstractname}{摘要}
+\renewenvironment{abstract}{
+	\quotation
+	\begin{spacing}{1.2}
+		\par\zihao{5}{\bfseries \abstractname：}
+	}{\end{spacing}\vskip 2.5ex}
+
+\begin{document}
+\begin{center}
+	{\zihao{-3}\textbf{《Artificial Intelligence——A Modern Approach》第21章 强化学习 读书报告}}
+
+	{\zihao{-4}尹达恒}\\[-1mm]
+
+	{\zihao{5}（东南大学，江苏\quad 南京）}
+\end{center}
+\renewcommand{\baselinestretch}{1.3}
+\zihao{5}
+
+\section{引言}
+
+\subsection{何谓之“强化学习”？}
+
+\begin{enumerate}[label=\arabic*、]
+	\item “状态”：Agent所处的环境的状况；
+	\item “动作”：Agent对环境进行某种操作，进而使得“状态”发生改变；
+	\item “强化”，或称“回报”：Agent从环境中获得什么是“好情况”和什么是“坏情况”的反馈；
+	\item “强化学习”：Agent利用观察到的“回报”来学习针对某个“状态”的最优“动作”。
+\end{enumerate}
+
+\subsection{强化学习的应用领域}
+
+在许多复杂领域中，人很难对大量的数据给出精确一致的评价，例如在棋类运动中，人很难评价每种棋局的好坏。替代地，人可以告诉机器什么时候赢了或输了，使机器能运用类似的信息来学习评价函数，进而对从任何给定的棋局出发对获胜的概率进行精确的估计。
+
+\subsection{强化学习的Agent简单分类}
+
+\begin{enumerate}[label=\arabic*、]
+	\item 基于“效用”的Agent：学习关于状态的效用函数，选择到达效用最大的状态的动作；
+	\item 基于“Q-learning”的Agent：学习在给定状态下采取特定动作所产生的效用的函数（Q函数），选择效用最大的动作；
+	\item 基于“反射”的Agent：学习一组将状态直接映射到动作的策略。
+\end{enumerate}
+
+\subsection{强化学习的目标}
+
+对于系统的每个状态$S_t(t\in\mathbb N_+)$，都对应一个回报值$R(S_t)\in\mathbb R$；当采取某个策略$\pi$时，与非终止状态相关联的效用期望值可以定义为：
+$$U^\pi(s)=E\left[\sum_{t=0}^\infty\gamma'R(S_t)\right]\quad(S_0=s)$$
+
+强化学习的目标就是要学习这个效用函数的输出与状态每个$s$之间的对应关系
+
+\section{被动强化学习}
+
+\subsection{直接效用估计}
+
+直接效用估计的核心思想是：一个状态的回报是从该状态往后的总回报期望。即贝尔曼方程：
+
+$$U^*(s)=R(s)+\gamma\sum_{s'}P(s'|s,\pi(s))U^*(s')$$
+
+在学习过程中，每次试验对于每个访问到的状态提供了一个样本每个样本都以状态为输入，以观察到的未来回报为输出，进而将强化学习问题简化为标准的归纳学习问题。
+
+然而，直接效用估计只有在序列的最后才能计算经过的每个状态的未来回报，因为它没有考虑到不同状态效用之间的联系，而将效用视为孤立的值。实际上，从强化学习的目标可以明显看出，一个状态的效用值与其后所有状态的效用值都有关。从这个层面上讲，直接效用估计错失了很多学习的机会，直到序列的最后才能开始学习，因而收敛很慢。
+
+\subsection{自适应动态规划}
+
+自适应动态规划Agent通过学习连接状态的转移模型，并使用动态规划方法求解马尔可夫决策过程，以利用效用之间的约束。相当于把学到的转移模型$P(s'|s,\pi(s)$以及观察到的回报$R(s)$带入到贝尔曼方程中，以计算状态的效用。
+
+由于环境的完全可观察性，学习模型本身的过程是容易的。这意味着我们面临一个有监督的学习任务，其输入是一个状态行动对，输出是结果状态，具体地，是对在状态$s$执行动作$a$后能够到达状态$s'$的转移概率$P(s'|s,a)$的估计值。
+
+对转移概率$P(s'|s,a)$的估计有两种方法，分别对应于基于贝叶斯方法的强化学习和基于鲁棒控制理论的强化学习。
+
+\subsubsection{基于贝叶斯理论的强化学习}
+
+假设$u_h^\pi$是通过在模型$h$中执行策略$\pi$而获得的期望效用，$P(h|\bm e)$是环境中出现$h$的概率，通常通过给定目前为止的观察用贝叶斯规则获得，那么基于贝叶斯理论的强化学习可以表示为：
+
+$$\pi^*=\mathop{argmax}\limits_\pi\sum_hP(h|\bm e)u_h^\pi$$
+
+\subsubsection{基于鲁棒控制理论的强化学习}
+
+基于鲁棒控制理论的强化学习所输出的策略为在最坏情况下输出的最好策略：
+
+$$\pi^*=\mathop{argmax}\limits_\pi\mathop{min}\limits_h u_h^\pi$$
+
+\subsection{时序差分学习}
+
+与求解贝尔曼方程的求解方法不同，时序差分学习使用观察到的转移来调整观察到的状态的效用，使得它们满足约束方程：
+
+$$U^*(s)\leftarrow U^*(s)+\alpha(R(s)+\gamma(s')-U^\pi(s))$$
+
+其中$\alpha$是学习速度参数。
+
+时序差分学习的基本思想是将效用估计朝着理想均衡方向调整，当效用估计正确时，理想均衡是局部成立的，其均衡就是贝尔曼方程。
+
+自适应动态规划和时序差分实际上是紧密相关的，它们都试图对效用估计进行局部调整，以使得每一状态都与其后继状态相一致。区别在于，时序差分调整状态使其与已观察到的状态相一致，而自适应动态规划则调整状态使其使其与所有可能出现的后继状态相一致，并根据概率进行加权。此外，时序差分学习对每个观察到的转移都只进行单一的调整，而自适应动态规划为了重建效用估计和环境模型之间的一致性会进行尽可能多的调整。所以，时序差分学习可以看作是对自适应动态规划的一个粗略而有效的一阶近似。
+
+\section{主动强化学习}
+
+\subsection{主动自适应动态规划学习Agent}
+
+被动学习Agent有固定的策略决定其行为，而主动学习Agent必须决定自己应该采取什么行动。
+
+一个显然的方案是，让Agent运用策略迭代，简单地执行最优策略所建议的行动，这类Agent称为贪婪Agent。但这种贪婪Agent很容易陷入局部最优而无法找到真正的最优解，因为学校到的模型和真实环境并一定不相同。行动不仅仅根据当前学习到的模型提供回报，它们也通过影响所接收的感知信息对真实模型的学习做出贡献，通过改进模型，Agent将在未来得到更高的回报。因此，一个Agent必须要在充分利用信息以最大化回报和探索以最大化长期利益之间进行折中。技术上，任何这样的方案在无穷探索的极限下都必然是贪婪的(GLIE, greedy in the limit of infinite exploration)。一个GLIE方案必须对每个状态下的每个行动进行无限次数的尝试，以避免由于一系列不常见的糟糕结果而错过最优行动的有限概率。一个GLIE方案最终还必须变得贪婪，以使得Agent的行动对于学习到的模型而言是最优的。
+
+存在几种不同的GLIE方案：
+\begin{enumerate}[label=\arabic*、]
+	\item 随机选择行动：收敛速度缓慢；
+	\item 给Agent尝试较少的行动加权，同时避免已确信具有低效用的行动：
+	$$U^+(s)\leftarrow R(s)+\gamma\mathop{max}\limits_af\left(\sum_{s'}P(s'|s,a)U^+(s'),N(s,a)\right)$$
+	其中：
+	$$f(u,n)=\left\{
+		\begin{aligned}
+			R^+&n<N_e\\
+			u&others\\
+		\end{aligned}
+	\right.$$
+\end{enumerate}
+
+\subsection{主动时序差分学习Agent}
+
+与被动学习的情况相比，主动时序差分学习Agent最明显的差别是Agent不再具有固定的策略。和主动自适应动态规划学习Agent不同的是，由于主动时序差分学习Agent使用观察到的转移来调整观察到的状态的效用，在从被动Agent成为主动Agent时，其更新规则不需要做出任何修改。
+
+\subsection{Q-Learning}
+
+Q-Learning是时序差分学习的一种，它学习一种行动-效用表示而不是学习效用。Q-Learning的核心——Q函数$Q(s,a)$代表在状态$s$进行行动$a$的价值，其与效用值直接相关：
+$$Q(s,a)=R(s)+\gamma\sum_{s'}P(s'|s,a)\mathop{max}\limits_{a'}Q(s',a')$$
+
+可以看出，Q-Learning不需要状态转移模型，而只需要Q值。Q-Learning的更新公式为：
+$$Q(s,a)\leftarrow Q(s,a)+\alpha(R(s)+\gamma\mathop{max}\limits_{a'}Q(s',a')-Q(s,a))$$
+
+\section{策略搜索}
+
+一个策略$\pi$就是一个将状态映射到行动的函数，它具有比状态空间中的状态少得多的参数。例如，可以用一个参数化的Q函数集合表示$\pi$，每个行动用一个函数，并选取具有最高预测值的行动：
+$$\pi(s)=\mathop{max}\limits_a\hat{Q}_\theta(s,a)$$
+
+每个Q函数都可以是诸如神经网络那样的一个非线性函数，然后策略搜索会调整参数$\theta$来改进策略，直到找到一个$\theta$，使$\hat{Q}_\theta$接近$Q$。
+
+离散的行动使得策略价值的变化不连续，令基于梯度的搜索变得困难，因此，策略搜索方法经常使用$\pi_\theta(s,a)$的一种随机搜索表示方法，指定在状态$s$中选择行动$a$的概率。一个常用的表示是softmax函数：
+$$\pi_\theta(s,a)=e^{\hat{Q}_\theta(s,a)}/\sum_{a'}\hat{Q}_\theta(s,a)$$
+
+\section{强化学习的应用}
+
+\begin{enumerate}[label=\arabic*、]
+	\item Arthur Samuel的下棋程序：加权线性函数用于形势评估，使用时序差分更新权值；
+	\item Gerry Tesauro的TD-GAMMON双陆棋程序：使用具有80个隐单元的神经网络，使用时序差分学习；
+	\item 小车连杆平衡：控制小车的位置以使连杆保持平衡，已有数千篇关于强化学习及相关控制理论的论文；
+	\item 直升机自动控制：通常使用策略搜索以及基于一个已经学习好的转移模型的进行仿真的算法。
+\end{enumerate}
+
+\end{document}
