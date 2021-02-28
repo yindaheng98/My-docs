@@ -130,7 +130,7 @@
 
 \subsection{Agent选型}
 
-根据第\ref{sec:任务环境分析}节的分析，直观上讲，本系统所需要的Agent就是一个简单的输入三个变量$(l_t, d_t, t_t)$，输出一个变量$a_t$的函数。但也可以看出，在Agent的运行环境中输出变量$a_t$的取值会反过来影响$t+1$时刻的网络状况；更进一步，Agent的优化目标也是从网络状况$S_t$中计算得到。综上所述，这是一个典型的强化学习模型的运行环境，可以使用强化学习模型进行求解。因此，本文将以强化学习模型为核心，介绍在实时交互式视频通信场景下的Agent设计。
+根据第\ref{sec:任务环境分析}节的分析，直观上讲，本系统所需要的Agent就是一个简单的输入三个变量$(l_t, d_t, t_t)$，输出一个变量$a_t$的函数。但也可以看出，在Agent的运行环境中输出变量$a_t$的取值会反过来影响$t+1$时刻的网络状况；更进一步，Agent的优化目标也是从网络状况$S_t$中计算得到。综上所述，这是一个典型的强化学习模型的运行环境\cite{russell2002artificial}，可以使用强化学习模型进行求解。因此，本文将以强化学习模型为核心，介绍在实时交互式视频通信场景下的Agent设计。
 
 \subsection{Agent运行过程}
 
@@ -172,128 +172,5 @@ $$r_t=r(a_t)=-\alpha\times l_{t+1}-\beta\times d_{t+1}+\gamma\times t_{t+1}$$
 给出采用一个课本中现成方法和算法的优缺点分析，结合上述优缺点分析，进一步给出本文的具体技术和算法方案；
 \section{方案分析}
 给出本文方案实际应用中的可行性分析。
-
-具体来说，决策树的构建方法可以表示为算法\ref{alg:DT}\cite{RN90}。
-\begin{algorithm}[htbp]
-	\caption{\mycaptionfont 决策树学习的基本算法}
-	\label{alg:DT}
-	\begin{algorithmic}[1]
-		\Require 训练集$\mathcal{D}=\left\{(\bm x_i,y_i)|1\leq i\leq m\right\}$、属性集$\mathcal{A}=\left\{a_i|1\leq i\leq d\right\}$
-		\Ensure $\forall (\bm x_i,y_i)\in \mathcal{D}$，属性值$a_i(\bm x_i)$存在
-		\Function {DecisionTree}{$\mathcal{D}$,$\mathcal{A}$}
-		\If{$\mathcal{D}$中的样本全部属于同一类别$C$}
-		\State \Return 单节点树，类别标记为$C$
-		\EndIf
-		\If{$\mathcal{A}=\varnothing$}
-		\State \Return 单节点树，类别标记为$\mathcal{D}$中样本数最多的类
-		\EndIf
-		\State 计算$\mathcal{A}$中每个特征的信息增益（ID3算法）或信息增益比（C4.5算法），从中选择最优属性$a_{best}$
-		\For{$a_{best}$的每一可能值$a_{best}^t$}
-		\State 令$\mathcal{D}'=\left\{(\bm x_i,y_i)|a_{best}(\bm x_i,y_i)=a_{best}^t,(\bm x_i,y_i)\in \mathcal{D}\right\}$
-		\If{$\mathcal{D}'=\varnothing$}
-		\State 添加叶节点，类别标记为$\mathcal{D}$中样本数最多的类
-		\Else
-		\State 递归添加分支节点\Call{DecisionTree}{$\mathcal{D}'$,$\mathcal{A}$}
-		\EndIf
-		\EndFor
-		\EndFunction
-	\end{algorithmic}
-\end{algorithm}
-
-将这4个分类结果占测试集总量的比率共同呈现于表\ref{tab:混淆矩阵}中，所形成的2$\times$2矩阵就称为混淆矩阵(Confusion Matrix)。相比于分类正确率，混淆矩阵能反映有关分类器性能的更加具体的信息，是分类预测模型性能评价的常用指标。
-\begin{table}[htbp]
-	\setstretch{1.5}
-	\centering
-	\caption{混淆矩阵}
-	\begin{tabular}{|c|c|c|}
-		\hline
-		\diagbox{预测值}{混淆矩阵}{真实值} & 正 & 负 \\
-		\hline
-		正                                 & TP & FP \\
-		\hline
-		负                                 & FN & TN \\
-		\hline
-	\end{tabular}
-	\label{tab:混淆矩阵}
-\end{table}
-
-\subsubsection{确定缺失项处理方法}\label{sec:确定缺失项处理方法}
-缺失属性项确定之后，接下来就需要确定各缺失项的处理方法。
-首先使用R语言读取“diabetes.csv”的数据并对数据集中的数据缺失情况进行统计：
-\begin{enumerate}
-	\item 统计“diabetes.csv”中的数据总行数，得到结果768；
-	\item 使用mice包中的md.pattern()函数统计数据集中的数据缺失情况，数据缺失情况统计表（表\ref{tab:缺失数据统计}）。
-\end{enumerate}
-\begin{table}[htbp]
-	\setstretch{1.5}
-	\centering
-	\caption{数据缺失情况}
-	\begin{tabular}{|c|ccccc|}
-		\hline
-		\diagbox{数据点数量}{是否缺失}{列名} & Glucose & BMI & BloodPressure & SkinThickness & Insulin \\\hline
-		392                                  & 否      & 否  & 否            & 否            & 否      \\
-		1                                    & 是      & 否  & 否            & 否            & 否      \\
-		140                                  & 否      & 否  & 否            & 否            & 是      \\
-		1                                    & 否      & 是  & 否            & 否            & 否      \\
-		4                                    & 是      & 否  & 否            & 否            & 是      \\
-		2                                    & 否      & 否  & 是            & 否            & 是      \\
-		192                                  & 否      & 否  & 否            & 是            & 是      \\
-		1                                    & 否      & 是  & 否            & 否            & 是      \\
-		26                                   & 否      & 否  & 是            & 是            & 是      \\
-		2                                    & 否      & 是  & 否            & 是            & 是      \\
-		7                                    & 否      & 是  & 是            & 是            & 是      \\\hline
-		列缺失总量                           & 5       & 11  & 35            & 227           & 374     \\\hline
-	\end{tabular}
-	\label{tab:缺失数据统计}
-\end{table}
-\section{实验结果与分析}
-\subsection{实验结果}
-\subsubsection{最高精度算法结果}
-\begin{itemize}
-	\item 算法最高精度：87.2611\%
-	\item 最高精度算法：人工神经网络，见\ref{sec:人工神经网络}节
-	\item 算法参数：见\ref{sec:进行逻辑回归}节和\ref{sec:ANN实践}节
-	\item 混淆矩阵：
-	\begin{table}[htbp]
-		\centering
-		\setstretch{1.5}
-		\caption{最高精度算法结果的混淆矩阵}\label{tab:混淆矩阵}
-		\begin{tabular}{|c|c|c|}
-			\hline
-			\%&估计样本0&估计样本1\\
-			\hline
-			真实样本0&64.33&7.006\\
-			\hline
-			真实样本1&5.732&22.93\\
-			\hline
-		\end{tabular}
-	\end{table}
-\end{itemize}
-
-\newpage
-\subsection{实验结果分析}
-\begin{enumerate}
-	\item 由表\ref{tab:混淆矩阵}可以看出：
-	\begin{enumerate}[label=\alph*)]
-		\item 错误估计的样本中假正例率和假负例率基本保持平衡，说明该算法对于正例和负例的判定都有比较好的结果；
-		\item 正确估计的样本中主要都集中于真负例，说明该数据集的正负例非常不平衡；
-		\item 上面两个结论表明，该算法在一个正负例不平衡的数据集中训练得到了一个假正例率和假负例率基本保持平衡的分类器，说明该算法具有很好的鲁棒性。
-	\end{enumerate}
-	\item 由图\ref{figure:ROC曲线}、图\ref{figure:总体正确率}和图\ref{figure:网络总体正确率}可以看出：
-	      \begin{enumerate}[label=\alph*)]
-		      \item 逻辑回归模型在该数据集上的准确性要略高于神经网络模型，且Dropout和L2正则化能使得神经网络模型的准确性和稳定性都有一定程度的提升，这说明本次实验中建立的神经网络模型在数据集上已经出现了过拟合现象，也印证了Dropout和L2正则化对神经网络模型过拟合的抑制作用；
-		      \item 在三种使用不同核函数的SVM分类算法中，使用较为复杂的径向基核和多项式核构造SVM的分类正确率都不及最简单的线性核SVM，表明所使用的数据集中数据分布结构比较简单，复杂的核函数并不能对SVM分类准确率的提升有帮助；
-		      \item 两种决策树算法在不同预处理数据集上的预测正确率相差很大，这表明决策树算法是一种不稳定的分类算法，在实际使用时需要一些后剪枝算法进行辅助；
-			  \item 高斯朴素贝叶斯算法在不同的预处理数据集上都有大致相近的正确率，表明基于贝叶斯的分类算法具有较好的稳定性；
-			  \item Stacking集成学习在多次重复实验中具有最高的稳定性，随机森林和AdaBoost集成学习算法在不同预处理数据集上的结果要比两种决策树算法都更接近，且随机森林算法的正确率要高于两种决策树算法，表明集成学习策略能提高机器学习算法的鲁棒性和准确性。
-	      \end{enumerate}
-	\item 由图\ref{figure:数据集正确率}和图\ref{figure:网络数据集正确率}可以看出：
-	      \begin{enumerate}[label=\alph*)]
-		      \item 经过EM填补的训练集训练出的机器学习算法在测试集上的准确率较为接近，且该训练集训练出的逻辑回归与神经网络算法在该测试集上的结果波动较小，表明EM填补相对于其他方法填补得到的训练集具有更好的分类特征，且不会与原数据集产生较大差异，对于有缺失数据的数据集使用EM算法能在一定程度上有提高训练出的机器学习算法的稳定性；
-		      \item 删除“SkinThickness”列后的训练集训练出的逻辑回归与神经网络算法的测试集正确率较高但是波动很大，表明SkinThickness列并非是和糖尿病直接相关的特征，但是在一定程度上有助于糖尿病诊断；
-		      \item 当删除训练集“Insulin”列或是“Insulin”和“SkinThickness”列都被删除时，逻辑回归与神经网络算法的测试集正确率都有所下降，这表明胰岛素确实时糖尿病诊断的重要特征。
-	      \end{enumerate}
-\end{enumerate}
-
 \bibliography{ref}
 \end{document}
