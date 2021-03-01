@@ -116,7 +116,7 @@
 
 令$S_t=(l_t, d_t, t_t)$表示第$t$个计时区间内Agent输入的网络状况信息。
 
-\subsection{Agent输出分析}
+\subsection{Agent输出分析}\label{sec:Agent输出分析}
 
 由于视频流需要连续发送的特点，在设计Agent时可以不必考虑包发送的时刻问题，而只用考虑一段时间内发送包的数据总量，即视频流的比特率。目前视频流应用常用的WebRTC框架即具有动态调节视频比特率的功能。
 
@@ -130,7 +130,7 @@
 
 \subsection{Agent选型}
 
-根据第\ref{sec:任务环境分析}节的分析，直观上讲，本系统所需要的Agent就是一个简单的输入三个变量$(l_t, d_t, t_t)$，输出一个变量$a_t$的函数。但也可以看出，在Agent的运行环境中输出变量$a_t$的取值会反过来影响$t+1$时刻的网络状况；更进一步，Agent的优化目标也是从网络状况$S_t$中计算得到。综上所述，这是一个典型的强化学习模型的运行环境\cite{russell2002artificial}，可以使用强化学习模型进行求解。因此，本文将以强化学习模型为核心，介绍在实时交互式视频通信场景下的Agent设计。
+根据第\ref{sec:任务环境分析}节的分析，直观上讲，本系统所需要的Agent就是一个简单的输入三个变量$(l_t, d_t, t_t)$，输出一个变量$a_t$的函数。但也可以看出，在Agent的运行环境中输出变量$a_t$的取值会反过来影响$t+1$时刻的网络状况，Agent的优化目标也是从网络状况$S_t$中计算得到。综上所述，这是一个典型的强化学习模型的运行环境\cite{russell2002artificial}，可以使用强化学习模型进行求解。更进一步，从第\ref{sec:Agent输出分析}节的分析可以看出，Agent所输出的$a_t$更接近于离散的策略输出。因此，本文将以强化学习模型中的策略搜索Agent为核心，介绍在实时交互式视频通信场景下的Agent设计。
 
 \subsection{Agent运行过程}
 
@@ -149,22 +149,22 @@
 
 根据第\ref{sec:Agent优化目标分析}节的分析，在Agent的运行环境中，Agent需要控制WebRTC视频流的比特率实现最高的比特率且使得系统恰好不发生拥塞。因此，根据第\ref{sec:Agent优化目标分析}节的判定方法，Agent的奖励函数要能让系统产生最大的吞吐量以及最小的丢包率和延迟，因此易得奖励函数：
 
-$$r_t=r(a_t)=-\alpha\times l_{t+1}-\beta\times d_{t+1}+\gamma\times t_{t+1}$$
+$$r_t=R(a_t)=-\alpha\times l_{t+1}-\beta\times d_{t+1}+\gamma\times t_{t+1}$$
 
 其中$r_t$表示第$t$个时间段内产生的输出$a_t$应用于$t+1$后所产生的奖励；$\alpha$、$\beta$和$\gamma$是训练前需要调节的超参数，表征网络情况的不同方面对系统的影响程度。
 
 \subsection{神经网络结构}
 
-给出适合的Agent结构，及具体模块的结构；
+Agent使用神经网络来表示带有一组参数$\theta$的策略$\pi_\theta$。它采用简单的全连接层结构来提取隐藏在不同输入元素中的隐式特征。令$\rho(\theta)$表示策略的价值，在视频流传输过程中，直接根据在参数$\theta$下的执行结果获得一个对$\theta$的梯度$\nabla_\theta\rho(\theta)$的无偏估计。若在起始状态$S_0$下应用比特率$a$后，获得回报$R(a)$，那么有：
+$$\nabla_\theta\rho(\theta)=\nabla_\theta\sum_a\pi_\theta(S_0,a)R(a)=\sum_a\nabla_\theta\pi_\theta(S_0,a)R(a)$$
+
+进而，在第$T$帧发送结束时，有：
+$$\nabla_\theta\rho(\theta)=\sum_a\nabla_\theta\pi_\theta(S_0,a)R(a)\approx\frac{1}{T}\sum_{t=1}^T\frac{\sum_a\nabla_\theta\pi_\theta(S_0,a_t)R(a_t)}{\pi_\theta(S_0,a_t)}\approx\frac{1}{T}\sum_{t=1}^T\frac{\sum_a\nabla_\theta\pi_\theta(s,a_t)R_t(s)}{\pi_\theta(s,a_t)}$$
+
 \section{问题}
-\begin{enumerate}[label=\arabic*、]
-	\item 如何适应动态的网络条件
-	\item 大量的Agent在各自的硬件上独立地运行，如何进行训练
-	\item 视频编解码器的调节具有滞后性
-	\item 掌握机器学习分类算法的性能提升方法；
-	\item 能编程实现一些机器学习分类算法并进行性能分析和改进；
-	\item 了解人工智能和分类算法的新进展、新应用。
-\end{enumerate}
+
+
+
 \section{现状}
 上述问题的已有解决方法及其优缺点分析；
 在虚拟环境中训练
