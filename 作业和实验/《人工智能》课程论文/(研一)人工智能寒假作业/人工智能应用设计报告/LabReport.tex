@@ -66,9 +66,11 @@
 	{\zihao{5}（东南大学，江苏\quad 南京）}
 \end{center}
 \begin{abstract}
-	待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定待定。
+	本文面向实时交互式视频通信领域，提出了一种基于强化学习和联邦学习的客户端侧流量调节的智能Agent设计方案，并针对关键问题和相关研究现状阐述了构建Agent所需的技术，最后对整体实现方案进行了可行性分析。
 
-	\textbf{主题词：} 策略，流量调节，联邦学习，强化学习，机器学习
+	本文所设计的系统解决了实时交互式视频通信领域的几个重要问题，功能完善，为大规模实时交互式视频通信应用的构建提供了有力支持，具有较强的实用价值。
+
+	\textbf{主题词：} 视频流，策略搜索，流量调节，联邦学习，强化学习
 \end{abstract}
 \renewcommand{\baselinestretch}{1.3}
 \zihao{5}
@@ -195,7 +197,7 @@ $$\nabla_\theta\rho(\theta)=\sum_a\nabla_\theta\pi_\theta(S_0,a)R(a)\approx\frac
 
 除此之外，即使成功地将大量的数据收集到的云端，Agent的训练也仍旧需要在基于现实数据创建的虚拟环境中完成，同样有第\ref{subsec:孤立}节所述的那些问题。
 
-\section{技术分析}
+\section{技术分析}\label{sec:技术分析}
 
 排除了虚拟环境和大规模收集敏感数据的可能，还有一条路就是直接从模型入手，在用户停止视频流后将训练好的Agent发送到云端，并使用联邦学习的方式整合各Agent的训练成果。
 
@@ -206,6 +208,18 @@ $$\theta'=\sum_{k=1}^K\alpha_k\theta_k$$
 其中$\alpha_k$为各个客户端参数的权值，例如可以给最近上传的客户端参赋予较大权值以适应网络不断变化的情况。
 
 \section{方案分析}
-给出本文方案实际应用中的可行性分析。
+
+综合第\ref{sec:智能Agent结构}节和第\ref{sec:技术分析}节的技术方案，可以得到本文所述的面向实时交互式视频通信客户端侧流量调节的智能Agent最终的运行过程：
+
+\begin{enumerate}[label=\arabic*、]
+	\item 用户启动客户端，开启视频流应用；
+	\item 客户端从云端下载当前最新的Agent；
+	\item 客户端开始视频流传输，使用Agent控制视频比特率，同时按照第\ref{sec:智能Agent结构}节所述的训练方式对Agent进行训练，直到用户关闭视频流；
+	\item 将训练完的Agent发送到云端；
+	\item 云端使用第\ref{sec:技术分析}节介绍的方案对多个客户端发来的Agent进行联邦学习，生成新的Agent。
+\end{enumerate}
+
+根据现有的技术方案\cite{WebRTCRealTimeCommunicationBrowsers,FedAIOrgFederatedAI,mao2020real}，只需要在WebRTC框架中在MediaStream上添加下载和训练Agent代码，并通过MediaStreamEvent类和MediaStreamTrack类收集网络环境信息即可完成客户端侧的Agent训练；借助FATE框架即可搭建位于云端的联邦学习系统对上传的Agent进行更新和分发。项目可行。
+
 \bibliography{ref}
 \end{document}
